@@ -16,10 +16,10 @@ padding:0;
 }
 
 .content-wrapper {
-width:1040px;
+/* width:1040px; */
 background:#fff;
 margin:0 auto;
-padding:30px 0px;
+/* padding:30px 0px; */
 position:relative;
 z-index:0;
 clear:both;	
@@ -784,11 +784,7 @@ margin-bottom:19px;
 margin-bottom:-9px;	
 }
 
-.list-line-contact li {
-margin-bottom:16px;
-padding-bottom:4px;
-border-bottom:1px solid #e6e6e6;	
-}
+
 
 .list-line li {
 margin-bottom:6px;
