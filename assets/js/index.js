@@ -1,4 +1,6 @@
-PageLaod("donloads");
+PageLaod("home");
+
+$(".download-btn").click(()=>{PageLaod('donloads')})
 
 $(".nav-time").click(function(){
     $(".nav-time").removeClass('selected');

@@ -1,3 +1,252 @@
+<script>
+
+    functionsInitializr(()=>{
+      renderAuctionLotsTable()
+    })
+
+    function renderAuctionLotsTable(){
+        var table;   
+
+        var downloadRenderer = function(param){
+            var span =  document.createElement('span');
+                span.classList.add('download-icon');
+                span.innerHTML = '<a><i class="icon-download"></i></a>';
+            return  span;
+        }
+
+        const columnDefs = [
+            {headerName:"Division"      , field:"depot",    resizable:true,width:"260px"},
+            {headerName:"Auction Date"  , field:"aucdt",    resizable:true},
+            {headerName:"Sold Date"     , field:"slddt",    resizable:true},
+            {headerName:"e-Auction No." , field:"eaucno",   resizable:true,width:"217px"},
+            {headerName:"Download"      , field:"savdFile", resizable:true,width:"80px",cellRenderer:downloadRenderer},
+            {headername:"aucdcid"       , field:"aucdcid",hide:true},
+            {headerName:"depotid"       , field:"depotid",hide:true}
+        ];
+
+        var rowData = [
+            {
+            "aucdcid": 425,
+            "depotid": 1,
+            "savdFile": "/home/sparsh/har/aucrprt/425/Sale_Result425.pdf",
+            "eaucno": " Amba//Feb/2023-2",
+            "depot": " Ambala ",
+            "aucdt": "20/02/2023",
+            "slddt": "25/02/2023"
+        },
+            {
+          "aucdcid": 424,
+          "depotid": 1,
+          "savdFile": "/home/sparsh/har/aucrprt/424/Sale_Result424.pdf",
+          "eaucno": " Karn//Feb/2023",
+          "depot": " Karnal ",
+          "aucdt": "17/02/2023",
+          "slddt": "22/02/2023"
+        },
+            {
+          "aucdcid": 423,
+          "depotid": 1,
+          "savdFile": "/home/sparsh/har/aucrprt/423/Sale_Result423.pdf",
+          "eaucno": " Roht//Feb/2023",
+          "depot": " Rohtak ",
+          "aucdt": "18/02/2023",
+          "slddt": "24/02/2023"
+        },
+            {
+          "aucdcid": 422,
+          "depotid": 1,
+          "savdFile": "/home/sparsh/har/aucrprt/422/Sale_Result422.pdf",
+          "eaucno": " Sirs//Feb/2023-2",
+          "depot": " Sirsa ",
+          "aucdt": "16/02/2023",
+          "slddt": "21/02/2023"
+        },
+            {
+          "aucdcid": 421,
+          "depotid": 1,
+          "savdFile": "/home/sparsh/har/aucrprt/421/Sale_Result421.pdf",
+          "eaucno": " Kuru//Feb/2023-2",
+          "depot": " Kurukshetra ",
+          "aucdt": "15/02/2023",
+          "slddt": "20/02/2023"
+        },
+            {
+          "aucdcid": 419,
+          "depotid": 1,
+          "savdFile": "/home/sparsh/har/aucrprt/419/Sale_Result419.pdf",
+          "eaucno": " Amba//Feb/2023",
+          "depot": " Ambala ",
+          "aucdt": "13/02/2023",
+          "slddt": "18/02/2023"
+        },
+            {
+          "aucdcid": 418,
+          "depotid": 1,
+          "savdFile": "/home/sparsh/har/aucrprt/418/Sale_Result418.pdf",
+          "eaucno": " Sirs//Feb/2023",
+          "depot": " Sirsa ",
+          "aucdt": "11/02/2023",
+          "slddt": "15/02/2023"
+        },
+            {
+          "aucdcid": 417,
+          "depotid": 1,
+          "savdFile": "/home/sparsh/har/aucrprt/417/Sale_Result417.pdf",
+          "eaucno": " Yamu//Feb/2023",
+          "depot": " Yamunanagar ",
+          "aucdt": "10/02/2023",
+          "slddt": "13/02/2023"
+        },
+            {
+          "aucdcid": 416,
+          "depotid": 1,
+          "savdFile": "/home/sparsh/har/aucrprt/416/Sale_Result416.pdf",
+          "eaucno": " Roht//Jan/2023-3",
+          "depot": " Rohtak ",
+          "aucdt": "30/01/2023",
+          "slddt": "04/02/2023"
+        },
+            {
+          "aucdcid": 415,
+          "depotid": 1,
+          "savdFile": "/home/sparsh/har/aucrprt/415/Sale_Result415.pdf",
+          "eaucno": " Roht//Jan/2023-2",
+          "depot": " Rohtak ",
+          "aucdt": "30/01/2023",
+          "slddt": "04/02/2023"
+        },
+            {
+          "aucdcid": 414,
+          "depotid": 1,
+          "savdFile": "/home/sparsh/har/aucrprt/414/Sale_Result414.pdf",
+          "eaucno": " Rewa//Jan/2023-3",
+          "depot": " Rewari ",
+          "aucdt": "28/01/2023",
+          "slddt": "01/02/2023"
+        },
+            {
+          "aucdcid": 413,
+          "depotid": 1,
+          "savdFile": "/home/sparsh/har/aucrprt/413/Sale_Result413.pdf",
+          "eaucno": " Roht//Jan/2023",
+          "depot": " Rohtak ",
+          "aucdt": "27/01/2023",
+          "slddt": "31/01/2023"
+        },
+            {
+          "aucdcid": 412,
+          "depotid": 1,
+          "savdFile": "/home/sparsh/har/aucrprt/412/Sale_Result412.pdf",
+          "eaucno": " Kuru//Jan/2023-3",
+          "depot": " Kurukshetra ",
+          "aucdt": "25/01/2023",
+          "slddt": "31/01/2023"
+        },
+            {
+          "aucdcid": 411,
+          "depotid": 1,
+          "savdFile": "/home/sparsh/har/aucrprt/411/Sale_Result411.pdf",
+          "eaucno": " Amba//Jan/2023-2",
+          "depot": " Ambala ",
+          "aucdt": "23/01/2023",
+          "slddt": "27/01/2023"
+        },
+            {
+          "aucdcid": 410,
+          "depotid": 1,
+          "savdFile": "/home/sparsh/har/aucrprt/410/Sale_Result410.pdf",
+          "eaucno": " Hisa//Jan/2023",
+          "depot": " Hisar ",
+          "aucdt": "24/01/2023",
+          "slddt": "28/01/2023"
+        },
+            {
+          "aucdcid": 409,
+          "depotid": 1,
+          "savdFile": "/home/sparsh/har/aucrprt/409/Sale_Result409.pdf",
+          "eaucno": " Guru//Jan/2023",
+          "depot": " Gurugram ",
+          "aucdt": "21/01/2023",
+          "slddt": "27/01/2023"
+        },
+            {
+          "aucdcid": 408,
+          "depotid": 1,
+          "savdFile": "/home/sparsh/har/aucrprt/408/Sale_Result408.pdf",
+          "eaucno": " Yamu//Jan/2023-3",
+          "depot": " Yamunanagar ",
+          "aucdt": "20/01/2023",
+          "slddt": "23/01/2023"
+        },
+            {
+          "aucdcid": 407,
+          "depotid": 1,
+          "savdFile": "/home/sparsh/har/aucrprt/407/Sale_Result407.pdf",
+          "eaucno": " Kuru//Jan/2023-2",
+          "depot": " Kurukshetra ",
+          "aucdt": "19/01/2023",
+          "slddt": "23/01/2023"
+        },
+            {
+          "aucdcid": 404,
+          "depotid": 1,
+          "savdFile": "/home/sparsh/har/aucrprt/404/Sale_Result404.pdf",
+          "eaucno": " Rewa//Jan/2023",
+          "depot": " Rewari ",
+          "aucdt": "18/01/2023",
+          "slddt": "23/01/2023"
+        },
+            {
+          "aucdcid": 403,
+          "depotid": 1,
+          "savdFile": "/home/sparsh/har/aucrprt/403/Sale_Result403.pdf",
+          "eaucno": " Karn//Jan/2023-2",
+          "depot": " Karnal ",
+          "aucdt": "17/01/2023",
+          "slddt": "23/01/2023"
+        },
+            {
+          "aucdcid": 402,
+          "depotid": 1,
+          "savdFile": "/home/sparsh/har/aucrprt/402/Sale_Result402.pdf",
+          "eaucno": " Amba//Jan/2023",
+          "depot": " Ambala ",
+          "aucdt": "16/01/2023",
+          "slddt": "23/01/2023"
+        },
+            {
+          "aucdcid": 401,
+          "depotid": 1,
+          "savdFile": "/home/sparsh/har/aucrprt/401/Sale_Result401.pdf",
+          "eaucno": " Sirs//Jan/2023-2",
+          "depot": " Sirsa ",
+          "aucdt": "14/01/2023",
+          "slddt": "19/01/2023"
+        },
+        ]
+
+        var gridOptions = {columnDefs,rowData};
+
+        table = new agGrid.Grid(document.querySelector("#auction-lots-table"),gridOptions);
+        
+    }
+
+
+
+</script>
+
+<style>
+
+    .download-icon{
+        font-size: 18px;
+        cursor: pointer;
+    }
+
+    .table-wrapper{
+        box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.1);
+    }
+</style>
+
 <!-- pagetitle start here -->
 <section id="pagetitle-container">
 	<div class="row">
@@ -5,12 +254,19 @@
         	<h1>Auction Result</h1>
             <h3>Display the online result;</h3>
         </div>
-        <div class="twelve column breadcrumb">
+        <!-- <div class="twelve column breadcrumb">
         	<ul>
                 <li><a href="index.html">Home</a></li>
                 <li class="current-page"><a href="#">Contact</a></li>
             </ul>
-        </div>
+        </div> -->
     </div>	        
 </section>
 <!-- pagetitle end here -->
+
+
+<section class="lots-table">
+    <div id="auction-lots-table" class="ag-theme-balham table-wrapper" style="height:400px;width: 960px;margin: auto;">
+    
+    </div>
+</section>

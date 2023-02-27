@@ -54,6 +54,27 @@ margin:0 auto;
 padding-bottom:1px;
 }
 
+
+.download-btn{
+    /* background-color: red; */
+    height: 32px;
+    margin-top: 3px;
+    font-size: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    color: #fff !important;
+    text-transform: uppercase;
+    border: 1px solid #1abc9c;
+    padding: 5px 1px !important;
+}
+
+.download-btn a{
+    text-decoration: none !important;
+    color: #fff !important;
+}
+
 #top-info {
 height:98px;
 }

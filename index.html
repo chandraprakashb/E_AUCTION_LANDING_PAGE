@@ -34,8 +34,16 @@
         <script src="./assets/template/js/accordion-functions.js"></script>
         <script src="./assets/template/js/theme-functions.js"></script>
         <script src="./assets/template/js/jquery/jquery.retina.js"></script>
-        <script src="./assets/js/dom-utility.js" defer></script>
+        <script src="./assets/js/dom-utility.js"  defer></script>
+        <script src="./assets/js/code-utility.js" defer></script>
         <script src="./assets/js/index.js" defer></script>
+
+    <!-- ag-Grid -->
+    <link rel="stylesheet" href="./assets/js/libs/ag-grid/css/ag-grid.min.css">
+    <link rel="stylesheet" href="./assets/js/libs/ag-grid/css/custome-css.css">
+    <link rel="stylesheet" href="./assets/js/libs/ag-grid/themes/ag-theme-balham.css">
+    <script src="./assets/js/libs/ag-grid/js/ag-grid-community.min.js" defer></script>
+    <!-- End ag-Grid -->
 
        
     </head>
@@ -49,22 +57,34 @@
             	<div class="twelve column">
                     <!-- logo start here -->
                     <div id="logo">
-                        <a href="index.html"><img src="./assets/template/images/logo.png" alt="main-logo" class="retina"></a>
+                        <a href="index.html"><img src="https://data-engine.co/wp-content/uploads/2021/11/light-logo-2.png" alt="main-logo" class="retina"></a>
                     </div>           
                     <!-- logo end here -->
                     
                     <div id="login-reg">
                         
                         <ul>                                
-                            <li class="facebook-color">
-                                <a href="#">
+                            <li class="">
+                                <div class="download-btn">
+                                    <a class="" href="#"> 
+                                        <span class="icon"><i class="icon-download"></i></span>
+                                        <span class="text">Downloads</span>
+                                    </a>
+                                </div>
+                            </li>
+                            <li class="">
+                                <a href="#" class="button small red">
                                     <!-- <i class="flat-count small"></i> -->
                                     Register
                                 </a>
                             </li>   
-                            <li class="facebook-color">
+                            <li class="">
                                 <a class="button small blue" href="#"> Login </a>
                             </li>
+                            
+                            
+
+
                         </ul>
                     </div>
                 </div>
@@ -80,32 +100,28 @@
                     <ul id="menu">
                         <li class="selected nav-time" data-page-link="home">
                             <a href="#">Home</a>
-                            <span class="desc-menu">It's our home</span>
+                            <span class="desc-menu">Back to Home</span>
                         </li>              
                         <li class="nav-time" data-page-link="auction-lots">
                             <a href="#">Auction Lots</a>
-                            <span class="desc-menu">Sample slogan</span>
+                            <span class="desc-menu">Search Lots</span>
                         </li>
                         <li class="nav-time" data-page-link="auction-result">
                             <a href="#">Auction Result</a>
-                            <span class="desc-menu">Sample slogan</span>
+                            <span class="desc-menu">View Result</span>
                         </li >
                     
                         <li class="nav-time" data-page-link="lot-lists">
                             <a href="#">Lot Lists</a>
-                            <span class="desc-menu">Sample slogan</span>
+                            <span class="desc-menu">View Lot List</span>
                         </li>
                         <li class="nav-time" data-page-link="notices">
                             <a href="#">Notices</a>
-                            <span class="desc-menu">Sample slogan</span>
+                            <span class="desc-menu">See Notication</span>
                         </li>
-                        <li class="dropdown">
-                            <a href="#">Others</a>
-                            <span class="desc-menu">Sample slogan</span>
-                            <ul>
-                                <li class="nav-time" data-page-link="contact"><a href="#">Contact Us</a></li>
-                                <li class="nav-time" data-page-link="donloads"><a href="#">Donwloads</a></li>
-                            </ul>
+                        <li class="nav-time"  data-page-link="contact">
+                            <a href="#">Contact Us</a>
+                            <span class="desc-menu">Connect With Us</span>
                         </li>
                     </ul>
                 </nav>
@@ -162,7 +178,7 @@
                 </div>
                 
                 <div class="three column">
-                    <img src="./assets/template/images/logo.png" alt="" class="footer-logo retina">
+                    <img src="https://data-engine.co/wp-content/uploads/2021/11/light-logo-2.png" alt="" class="footer-logo retina">
                     <p>Temporibus autem quibusdam officiis debitis aut rerum necessitatibus saepe</p>
                     <p>&copy; 2013 by "Sparsh Technologies". All Rights Reserved. </p>	
                 </div>       
