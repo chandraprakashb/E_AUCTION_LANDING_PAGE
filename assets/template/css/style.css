@@ -490,73 +490,78 @@ text-decoration:none;
 
 /***** Slideshow Stylesheet *****/
 #slideshow-container {
-width:100% !important;
-height:463px;
-background:#e4e6e6;
-position:relative;
-overflow:hidden;
-padding:0;
+    width:100% !important;
+    height:400px;
+    background:#e4e6e6;
+    position:relative;
+    overflow:hidden;
+    padding:0;
 }
 
 #slideshow-container2 {
-width:100% !important;
-height:412px;
-background:#e4e6e6;
-position:relative;
-overflow:hidden;
-padding:0;
+    width:100% !important;
+    height:412px;
+    background:#e4e6e6;
+    position:relative;
+    overflow:hidden;
+    padding:0;
 }
 
 .banner {
-width:100%;
-height:463px !important;
-position:relative;
-overflow:hidden;
-margin:0 auto;
+    width:100%;
+    height:463px !important;
+    position:relative;
+    overflow:hidden;
+    margin:0 auto;
 }
 
 .banner2 {
-width:100%;
-height:412px !important;
-position:relative;
-overflow:hidden;
-margin:0 auto;
+    width:100%;
+    height:412px !important;
+    position:relative;
+    overflow:hidden;
+    margin:0 auto;
 }
 
 .banner-pf {
-width:100%;
-height:450px !important;
-background:#dcdcdc;
--webkit-border-radius: 6px;
--moz-border-radius: 6px;
-border-radius: 6px;
-margin-bottom:10px;
-position:relative;
-overflow:hidden;
+    width:100%;
+    height:450px !important;
+    background:#dcdcdc;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    margin-bottom:10px;
+    position:relative;
+    overflow:hidden;
 }
 
 .banner-pf ul li img {
-height:450px !important;
--webkit-border-radius: 6px;
--moz-border-radius: 6px;
-border-radius: 6px;	
+    height:450px !important;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;	
 }
 
 .banner-blog {
-width:100%;
-height:227px !important;
-background:#dcdcdc;
-position:relative;
-overflow:hidden;
+    width:100%;
+    height:227px !important;
+    background:#dcdcdc;
+    position:relative;
+    overflow:hidden;
 }
 
 #slide-box {
-margin:0px 0px -107px 0px !important; 
-position:relative;
-top:-66px;
-left:-26px;
-z-index:999 !important;
-overflow:hidden;
+    /* width: 200% !important; */
+    /* margin:0px 0px -107px 0px !important;  */
+    position:relative;
+    top:-20px;
+    left:-26px;
+    z-index:999 !important;
+    overflow:hidden;
+    background-color: #7fccff;
+    border-radius: 5px;
+    box-shadow: 0px 0px 100px -22px #000;
+    padding: 20px 0px;
 }
 
 @media \0screen {.promo-box h3 {font-size:23px;}}
