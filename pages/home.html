@@ -41,6 +41,28 @@
             shadow:0								//0 = no Shadow, 1,2,3 = 3 Different Art of Shadows -  (No Shadow in Fullwidth Version !)
         })
 
+        setTimeout(()=>{
+            var swiper = new Swiper(".images-swiper", {
+            effect: "coverflow",
+            grabCursor: true,
+            centeredSlides: true,
+            slidesPerView: "auto",
+            coverflowEffect: {
+                rotate: 50,
+                stretch: 0,
+                depth: 100,
+                modifier: 1,
+                slideShadows: true,
+            },
+            autoplay: {
+        delay: 2500,
+        disableOnInteraction: false,
+      },
+            pagination: {
+                el: ".swiper-pagination",
+            },
+        });
+        },2000)
     });
 </script>
 
@@ -63,6 +85,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        padding: 0px 10px;
     }
 
     .wrapper{
@@ -92,18 +115,44 @@
     }
 
     .wrapper .main-wrapper{
-        width:95%;
+        width:90%;
     }
 
-    .wrapper .main-wrapper .notification{
-        background-color: #3f8fc5;
+    .main-wrapper .notification{
         color: #283849;
         font-size: 17px;
-        padding: 5px;
-        border-radius: 10px;
-        box-shadow: 0px 0px 27px -14px #000;;
+        /* font-weight: 700; */
+        text-decoration: underline;
+        background-color: #0aa6fa;
+        border-radius: 5px;
+        padding: 7px;
     }
 
+    #commodities-swiper{
+        background-color: rgb(238, 236, 236);
+        padding-top: 40px;
+        padding-bottom: 40px;
+    }
+
+    #commodities-swiper .swiper {
+      width: 100%;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      height: 50px !important;
+    }
+
+    #commodities-swiper .swiper-slide {
+      background-position: center;
+      background-size: cover;
+      width: 300px !important;
+      height: 300px !important;
+    }
+
+    #commodities-swiper .swiper-slide img {
+      display: block;
+      width: 300px;
+      height: 300px !important;
+    }
 </style>
 
 <!-- slideshow start here -->
@@ -214,55 +263,60 @@
                 <div class="text">Gondia</div>
             </div>
         </div>
-        <div class="wrapper">
+        <div class="">
             <div class="main-wrapper" style="height: 80px;">
                 <div class="swiper mySwiper" style="height: 80px;">
                     <div class="swiper-wrapper">
                         <div class="swiper-slide">
-                            <div class="notification">
+                            <p class="notification">
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam sit consectetur repudiandae at obcaecati!
-                            </div>
+                            </p>
                         </div>
                         <div class="swiper-slide">
-                            <div class="notification">
+                            <p class="notification">
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam sit consectetur repudiandae at obcaecati!
-                            </div>
+                            </p>
                         </div>
                         <div class="swiper-slide">
-                            <div class="notification">
+                            <p class="notification">
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam sit consectetur repudiandae at obcaecati!
-                            </div>
+                            </p>
                         </div>
                         <div class="swiper-slide">
-                            <div class="notification">
+                            <p class="notification">
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam sit consectetur repudiandae at obcaecati!
-                            </div>
+                            </p>
                         </div>
 
                         <div class="swiper-slide">
-                            <div class="notification">
+                            <p class="notification">
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam sit consectetur repudiandae at obcaecati!
-                            </div>
-                        </div><div class="swiper-slide">
-                            <div class="notification">
+                            </p>
+                        </div>
+                        <div class="swiper-slide">
+                            <p class="notification">
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam sit consectetur repudiandae at obcaecati!
-                            </div>
-                        </div><div class="swiper-slide">
-                            <div class="notification">
+                            </p>
+                        </div>
+                        <div class="swiper-slide">
+                            <p class="notification">
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam sit consectetur repudiandae at obcaecati!
-                            </div>
-                        </div><div class="swiper-slide">
-                            <div class="notification">
+                            </p>
+                        </div>
+                        <div class="swiper-slide">
+                            <p class="notification">
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam sit consectetur repudiandae at obcaecati!
-                            </div>
-                        </div><div class="swiper-slide">
-                            <div class="notification">
+                            </p>
+                        </div>
+                        <div class="swiper-slide">
+                            <p class="notification">
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam sit consectetur repudiandae at obcaecati!
-                            </div>
-                        </div><div class="swiper-slide">
-                            <div class="notification">
+                            </p>
+                        </div>
+                        <div class="swiper-slide">
+                            <p class="notification">
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam sit consectetur repudiandae at obcaecati!
-                            </div>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -305,26 +359,26 @@
                          <div class="flatborder">                           
                              <i class="flat-check medium"></i>
                          </div>    
-                         <h3>More Valuable</h3> 
-                         <p>Lorem ipsum dolor amet consectet adipisin elit sed eiusmod tempor consectetur nostrum exercitationem ullam corporis suscipit fugiat</p>
+                         <h3>Add Free Application</h3> 
+                         <p>Our Application is 100% add free</p>
                      </div>	
                  </li>
                  <li>
                  	<div class="animated-column text-center">
                          <div class="flatborder">                           
-                             <i class="flat-ui medium"></i>
+                             <i class="flat-clock medium"></i>
                          </div>    
-                         <h3>Ton of Features</h3> 
-                         <p>Lorem ipsum dolor amet consectet adipisin elit sed eiusmod tempor consectetur nostrum exercitationem ullam corporis suscipit fugiat</p>
+                         <h3>24/7 Contact Support</h3> 
+                         <p>We Provide 24/7 Contact Support </p>
                      </div>	
                  </li>
                  <li>
                  	<div class="animated-column text-center">
                          <div class="flatborder">                           
-                             <i class="flat-statistic medium"></i>
+                             <i class="flat-responsive medium"></i>
                          </div>    
-                         <h3>SEO Friendly</h3> 
-                         <p>Lorem ipsum dolor amet consectet adipisin elit sed eiusmod tempor consectetur nostrum exercitationem ullam corporis suscipit fugiat</p>
+                         <h3>Top Level Security</h3> 
+                         <p>Our Online Auction Portal Is Highly Secured</p>
                      </div>	
                  </li>                            
              </ul>
@@ -333,205 +387,178 @@
      
      <div class="row">        
      	<div class="twelve column smallmargin-bottom">
-         	<h3 class="title-line"><span>Recent Projects</span></h3>
-         </div>
-         
-         <div class="three column text-center mobile-two">            	
-             <div class="shape">
-                 <div class="overlay hexagon"></div>
-                 <div class="teaser">                                                
-                     <div class="teaser-preview-box">
-                             
-                         <div class="lightbox-item"> 
-                             <img src="./assets/template/images/portfolio_thumb/p1.jpg" alt="">
-                             <div class="lightbox-item-overlay-content"> 
-                                 <h6>Project Title</h6>
-                                 <hr>
-                                 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor incididunt</p>		
-                                 <a class="preview fancybox" href="./assets/template/images/portfolio_big/p1.jpg" data-fancybox-group="gallery" title="Some of project description here"><i class="icon-search"></i></a>
-                                 <a class="permalink" href="portfolio-single.html"><i class="icon-link"></i></a>
-                             </div>
-                         </div>  
-                             
-                     </div>
-                 </div>
-             </div>
-             <h5 class="smallmargin-bottom">Project Title</h5>
-             <p>Some description here or anything</p>               
-         </div>
-         
-         <div class="three column text-center mobile-two">            	
-             <div class="shape">
-                 <div class="overlay hexagon"></div>
-                 <div class="teaser">                                                
-                     <div class="teaser-preview-box">
-                             
-                         <div class="lightbox-item"> 
-                             <img src="./assets/template/images/portfolio_thumb/p2.jpg" alt="">
-                             <div class="lightbox-item-overlay-content"> 
-                                 <h6>Project Title</h6>
-                                 <hr>
-                                 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor incididunt</p>		
-                                 <a class="preview fancybox" href="./assets/template/images/portfolio_big/p2.jpg" data-fancybox-group="gallery" title="Some of project description here"><i class="icon-search"></i></a>
-                                 <a class="permalink" href="portfolio-single.html"><i class="icon-link"></i></a>
-                             </div>
-                         </div>  
-                             
-                     </div>
-                 </div>
-             </div>
-             <h5 class="smallmargin-bottom">Project Title</h5>
-             <p>Some description here or anything</p>                
-         </div>
-         
-         <div class="three column text-center mobile-two">            	
-             <div class="shape">
-                 <div class="overlay hexagon"></div>
-                 <div class="teaser">                                                
-                     <div class="teaser-preview-box">
-                             
-                         <div class="lightbox-item"> 
-                             <img src="./assets/template/images/portfolio_thumb/p3.jpg" alt="">
-                             <div class="lightbox-item-overlay-content"> 
-                                 <h6>Project Title</h6>
-                                 <hr>
-                                 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor incididunt</p>		
-                                 <a class="preview fancybox" href="./assets/template/images/portfolio_big/p3.jpg" data-fancybox-group="gallery" title="Some of project description here"><i class="icon-search"></i></a>
-                                 <a class="permalink" href="portfolio-single.html"><i class="icon-link"></i></a>
-                             </div>
-                         </div>  
-                             
-                     </div>
-                 </div>
-             </div> 
-             <h5 class="smallmargin-bottom">Project Title</h5>
-             <p>Some description here or anything</p>               
-         </div>
-         
-         <div class="three column text-center mobile-two">            	
-             <div class="shape">
-                 <div class="overlay hexagon"></div>
-                 <div class="teaser">                                                
-                     <div class="teaser-preview-box">
-                             
-                         <div class="lightbox-item"> 
-                             <img src="./assets/template/images/portfolio_thumb/p4.jpg" alt="">
-                             <div class="lightbox-item-overlay-content"> 
-                                 <h6>Project Title</h6>
-                                 <hr>
-                                 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor incididunt</p>		
-                                 <a class="preview fancybox" href="./assets/template/images/portfolio_big/p4.jpg" data-fancybox-group="gallery" title="Some of project description here"><i class="icon-search"></i></a>
-                                 <a class="permalink" href="portfolio-single.html"><i class="icon-link"></i></a>
-                             </div>
-                         </div>  
-                             
-                     </div>
-                 </div>
-             </div>
-             <h5 class="smallmargin-bottom">Project Title</h5>
-             <p>Some description here or anything</p>                
-         </div>
+         	<h3 class="title-line"><span>Portal Commodities</span></h3>
+        </div>
+        
+        <div class="three column text-center mobile-two">            	
+            <div class="shape">
+                <div class="overlay hexagon"></div>
+                <div class="teaser">                                                
+                    <div class="teaser-preview-box">
+                            
+                        <div class="lightbox-item"> 
+                            <img src="./assets/images/commodities/timber.jpg" style="margin-top:-51px"  alt="">
+                            <div class="lightbox-item-overlay-content"> 
+                                <h6>Timber</h6>
+                                <hr>
+                                <p>You can purchase Timber from more than one dealers</p>		
+                                <a class="preview fancybox" href="./assets/template/images/portfolio_big/p1.jpg" data-fancybox-group="gallery" title="Some of project description here"><i class="icon-search"></i></a>
+                                <a class="permalink" href="portfolio-single.html"><i class="icon-link"></i></a>
+                            </div>
+                        </div>  
+                            
+                    </div>
+                </div>
+            </div>
+            <h5 class="smallmargin-bottom">Timber</h5>
+            <p>Timber is wood that has been processed into uniform and useful sizes, including 
+               poles and round timbersa and other forest produced materials. </p>               
+        </div>
+        
+        <div class="three column text-center mobile-two">            	
+            <div class="shape">
+                <div class="overlay hexagon"></div>
+                <div class="teaser">                                                
+                    <div class="teaser-preview-box">
+                            
+                        <div class="lightbox-item"> 
+                            <img src="https://images.unsplash.com/photo-1612965110667-4175024b0dcc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80" style="margin-top:-51px;" alt="">
+                            <div class="lightbox-item-overlay-content"> 
+                                <h6>Scrap</h6>
+                                <hr>
+                                <p>You can purchase Scrap from more than one dealers</p>		
+                                <a class="preview fancybox" href="./assets/template/images/portfolio_big/p2.jpg" data-fancybox-group="gallery" title="Some of project description here"><i class="icon-search"></i></a>
+                                <a class="permalink" href="portfolio-single.html"><i class="icon-link"></i></a>
+                            </div>
+                        </div>  
+                            
+                    </div>
+                </div>
+            </div>
+            <h5 class="smallmargin-bottom">Scrap</h5>
+            <p>scrap has monetary value, especially recovered metals, and non-metallic materials are also recovered for recycling.</p>                
+        </div>
+        
+        <div class="three column text-center mobile-two">            	
+            <div class="shape">
+                <div class="overlay hexagon"></div>
+                <div class="teaser">                                                
+                    <div class="teaser-preview-box">
+                            
+                        <div class="lightbox-item"> 
+                           <img src="https://images.unsplash.com/photo-1565338670133-08ffb80d2363?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTh8fGJhbWJvb3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60" style="margin-top:-146px" alt="">
+                            <div class="lightbox-item-overlay-content"> 
+                                <h6>Bamboo</h6>
+                                <hr>
+                                <p>You can purchase Bamboo from more than one dealers                                 </p>		
+                                <a class="preview fancybox" href="./assets/template/images/portfolio_big/p3.jpg" data-fancybox-group="gallery" title="Some of project description here"><i class="icon-search"></i></a>
+                                <a class="permalink" href="portfolio-single.html"><i class="icon-link"></i></a>
+                            </div>
+                        </div>  
+                            
+                    </div>
+                </div>
+            </div> 
+            <h5 class="smallmargin-bottom">Bamboo</h5>
+            <p>Bamboos are a diverse group of mostly evergreen perennial flowering plants making up the subfamily Bambusoideae of the grass family Poaceae.</p>               
+        </div>
+        
+        <div class="three column text-center mobile-two">            	
+            <div class="shape">
+                <div class="overlay hexagon"></div>
+                <div class="teaser">                                                
+                    <div class="teaser-preview-box">
+                            
+                        <div class="lightbox-item"> 
+                            <img src="https://mikestrucking.com/wp-content/uploads/2019/08/firewood2.jpeg" style="margin-top:-51px" alt="">
+                            <div class="lightbox-item-overlay-content"> 
+                                <h6>Fire Wood</h6>
+                                <hr>
+                                <p>You can purchase Fuel Wood from more than one dealers                                 </p>		
+                                <a class="preview fancybox" href="./assets/template/images/portfolio_big/p4.jpg" data-fancybox-group="gallery" title="Some of project description here"><i class="icon-search"></i></a>
+                                <a class="permalink" href="portfolio-single.html"><i class="icon-link"></i></a>
+                            </div>
+                        </div>  
+                            
+                    </div>
+                </div>
+            </div>
+            <h5 class="smallmargin-bottom">Fire Wood</h5>
+            <p>
+               Firewood is wood that has been cut into pieces so that it can be burned on a fire.
+            </p>                
+        </div>
      </div>      
               
  </section>
  <!-- content section end here -->
+
+ <!-- Swiper -->
+ <div class="row">
+    <div class="twelve column">
+        <div class="swiper images-swiper" id="commodities-swiper">
+            <div class="swiper-wrapper">
+              <div class="swiper-slide">
+                <img src="./assets/images/com-slider/img1.jpeg" />
+              </div>
+              <div class="swiper-slide">
+                <img src="./assets/images/com-slider/img2.jpeg" />
+              </div>
+              <div class="swiper-slide">
+                <img src="./assets/images/com-slider/img3.jpeg" />
+              </div>
+              <div class="swiper-slide">
+                <img src="./assets/images/com-slider/img4.jpeg" />
+              </div>
+              <div class="swiper-slide">
+                <img src="./assets/images/com-slider/img5.jpeg" />
+              </div>
+              <div class="swiper-slide">
+                <img src="./assets/images/com-slider/img6.jpeg" />
+              </div>
+              <div class="swiper-slide">
+                <img src="./assets/images/com-slider/img7.jpeg" />
+              </div>
+            </div>
+            <div class="swiper-pagination" style="display: none !important;"></div>
+        </div>
+    </div>
+ </div>
+ <!-- Swiper End Here -->
+  
  
  <!-- bottom content start here -->
  <section id="bottom-content">
  
  	<div class="row">
      	<div class="twelve column text-center">
-         	<h3>What is Going on at FLUX</h3>
+         	<h3>Visitors Counts On Our Portal</h3>
              
              <ul class="block-grid-nomargin four-up">
              	<li class="bottom-fact with-border">
-                 	<ul class="icon-fact">
-                     	<li><i class="icon-appointment-agenda"></i></li>
-                         <li><i class="icon-appointment-agenda"></i></li>
-                         <li><i class="icon-appointment-agenda"></i></li>
-                         <li><i class="icon-appointment-agenda"></i></li>
-                         <li><i class="icon-appointment-agenda"></i></li>
-                         <li><i class="icon-appointment-agenda"></i></li>
-                         <li><i class="icon-appointment-agenda"></i></li>
-                         <li><i class="icon-appointment-agenda"></i></li>
-                         <li><i class="icon-appointment-agenda"></i></li>
-                         <li><i class="icon-appointment-agenda"></i></li>
-                         <li><i class="icon-appointment-agenda"></i></li>
-                         <li><i class="icon-appointment-agenda"></i></li>
-                         <li><i class="icon-appointment-agenda"></i></li>
-                         <li><i class="icon-plus"></i></li>
-                     </ul>
                      <h1>40,100+</h1>
-                 	<p>Completed Projects</p>
-                 </li>
+                 	<p>Total Visitors</p>
+                </li>
                  
-                 <li class="bottom-fact with-border">
-                 	<ul class="icon-fact">
-                     	<li><i class="icon-workshirt"></i></li>
-                         <li><i class="icon-workshirt"></i></li>
-                         <li><i class="icon-workshirt"></i></li>
-                         <li><i class="icon-workshirt"></i></li>
-                         <li><i class="icon-workshirt"></i></li>
-                         <li><i class="icon-workshirt"></i></li>
-                         <li><i class="icon-workshirt"></i></li>
-                         <li><i class="icon-workshirt"></i></li>
-                         <li><i class="icon-workshirt"></i></li>
-                         <li><i class="icon-workshirt"></i></li>
-                         <li><i class="icon-workshirt"></i></li>
-                         <li><i class="icon-workshirt"></i></li>
-                         <li><i class="icon-workshirt"></i></li>
-                         <li><i class="icon-plus"></i></li>
-                     </ul>
-                     <h1>220+</h1>
-                 	<p>Professionals</p>
-                 </li>
+                <li class="bottom-fact with-border">
+                     <h1>2200+</h1>
+                 	<p>Previus Month Visitors</p>
+                </li>
                  
-                 <li class="bottom-fact with-border">
-                 	<ul class="icon-fact">
-                     	<li><i class="icon-terminal"></i></li>
-                         <li><i class="icon-terminal"></i></li>
-                         <li><i class="icon-terminal"></i></li>
-                         <li><i class="icon-terminal"></i></li>
-                         <li><i class="icon-terminal"></i></li>
-                         <li><i class="icon-terminal"></i></li>
-                         <li><i class="icon-terminal"></i></li>
-                         <li><i class="icon-terminal"></i></li>
-                         <li><i class="icon-terminal"></i></li>
-                         <li><i class="icon-terminal"></i></li>
-                         <li><i class="icon-terminal"></i></li>
-                         <li><i class="icon-terminal"></i></li>
-                         <li><i class="icon-terminal"></i></li>
-                         <li><i class="icon-plus"></i></li>
-                     </ul>
-                     <h1>220,792+</h1>
-                 	<p>Coding Experiments</p>
-                 </li>
+                <li class="bottom-fact with-border">
+                    <h1>220</h1>
+                 	<p>Previus Week Visitors</p>
+                </li>
                  
-                 <li class="bottom-fact">
-                 	<ul class="icon-fact">
-                     	<li><i class="icon-coffee"></i></li>
-                         <li><i class="icon-coffee"></i></li>
-                         <li><i class="icon-coffee"></i></li>
-                         <li><i class="icon-coffee"></i></li>
-                         <li><i class="icon-coffee"></i></li>
-                         <li><i class="icon-coffee"></i></li>
-                         <li><i class="icon-coffee"></i></li>
-                         <li><i class="icon-coffee"></i></li>
-                         <li><i class="icon-coffee"></i></li>
-                         <li><i class="icon-coffee"></i></li>
-                         <li><i class="icon-coffee"></i></li>
-                         <li><i class="icon-coffee"></i></li>
-                         <li><i class="icon-coffee"></i></li>
-                         <li><i class="icon-plus"></i></li>
-                     </ul>
-                     <h1>8,492</h1>
-                 	<p>Coffees Have Drink</p>
-                 </li>
+                <li class="bottom-fact">
+                    <h1>102</h1>
+                 	<p>Today's Visitors</p>
+                </li>
              </ul>
              
-             <p>We want to be a part of your team - <a href="#" class="raquo">Learn more about our team <i class="icon-chevron-right"></i></a></p>
-         </div>         
-     </div>
+             <p>Register now to participate in a bid - <a href="#" class="raquo">Click Here To Register <i class="icon-chevron-right"></i></a></p>
+        </div>         
+    </div>
      
  </section>
  <!-- bottom content end here -->
@@ -539,9 +566,56 @@
  <script>
 
     const notifications = [
-        "eAuction for  Karnal  Division on 28/02/2023  E-Auction No :  Karn//Feb/2023-2",
-        "eAuction for  Rewari  Division on 26/02/2023  E-Auction No :  Rewa//Feb/2023Notification 2",
-        " eAuction for  Rohtak  Division on 27/02/2023  E-Auction No :  Roht//Feb/2023-2",
+        {
+            "commdityName":"Timeber",
+            "departments" :[
+                {
+                    "deparmentsName":"Gondia",
+                    "nontifications":[
+                        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam sit consectetur repudiandae at obcaecati!",
+                        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam sit consectetur repudiandae at obcaecati!",
+                        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam sit consectetur repudiandae at obcaecati!",
+                        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam sit consectetur repudiandae at obcaecati!",
+                        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam sit consectetur repudiandae at obcaecati!"
+                    ]
+                },
+                {
+                    "deparmentsName":"Pune",
+                    "nontifications":[
+                        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam sit consectetur repudiandae at obcaecati!",
+                        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam sit consectetur repudiandae at obcaecati!",
+                        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam sit consectetur repudiandae at obcaecati!",
+                        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam sit consectetur repudiandae at obcaecati!",
+                        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam sit consectetur repudiandae at obcaecati!"
+                    ]
+                },
+            ],
+        },
+        {
+            "commdityName":"Baambu",
+            "departments" :[
+                {
+                    "deparmentsName":"Nagpur",
+                    "nontifications":[
+                        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam sit consectetur repudiandae at obcaecati!",
+                        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam sit consectetur repudiandae at obcaecati!",
+                        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam sit consectetur repudiandae at obcaecati!",
+                        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam sit consectetur repudiandae at obcaecati!",
+                        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam sit consectetur repudiandae at obcaecati!"
+                    ]
+                },
+                {
+                    "deparmentsName":"Bhandara",
+                    "nontifications":[
+                        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam sit consectetur repudiandae at obcaecati!",
+                        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam sit consectetur repudiandae at obcaecati!",
+                        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam sit consectetur repudiandae at obcaecati!",
+                        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam sit consectetur repudiandae at obcaecati!",
+                        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam sit consectetur repudiandae at obcaecati!"
+                    ]
+                },
+            ],
+        }
     ]
 
     var swiper = new Swiper(".mySwiper", {
@@ -557,4 +631,20 @@
       
     });
 
+
+    class RenderNotifications{
+        notificationData;
+        constructor(notificationData) {
+            this.notificationData = notificationData;
+
+            console.log(notificationData);
+        }
+
+        createSliderLayOut(){
+            var divElement = document.createElement('div');
+                divElement.innerHTML = ``;  
+        }
+    }
+
+    new RenderNotifications(notifications)
  </script>

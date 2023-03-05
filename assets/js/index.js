@@ -1,4 +1,4 @@
-PageLaod("home");
+setTimeout(()=>{PageLaod("lot-lists")} , 1000)
 
 $(".download-btn").click(()=>{PageLaod('donloads')})
 

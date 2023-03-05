@@ -2,3 +2,13 @@
     background-color: #34495e;
     color: #cecece !important;
 }
+
+.ag-header-row-column-group{
+    font-size: 15px;
+    color: #cecece !important;
+}
+
+.ag-header-viewport{
+    background-color: #34495e !important;
+    color: #cecece !important;
+}

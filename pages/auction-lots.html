@@ -4,40 +4,762 @@
       renderAuctionLotsTable()
     })
 
+    function DataModifier(PROVIDED_DATA){
+        var finalinzeModifiedData__first  = [];
+        var finalinzeModifiedData__second = [];
+        var finalinzeModifiedData__third  = [];
+        var modifiedData = [];
+
+        PROVIDED_DATA.forEach((comdata)=>{
+                if('offices' in comdata){
+                    comdata.offices.forEach((officeData)=>{
+                        if('authorities' in officeData){
+                            officeData.authorities.forEach((authorityData)=>{
+                                if('auctions' in authorityData){
+                                    authorityData.auctions.forEach((auctionData)=>{
+                                        modifiedData.push({
+                                            commodityName:comdata.commodityName,
+                                            officeName:officeData.officeName,
+                                            authorityName:authorityData.authorityName,
+                                            auction_id:auctionData.auction_id,
+                                            startDate:auctionData.startDate,
+                                            endDate:auctionData.endDate,
+                                            totalLots:auctionData.totalLots,
+                                        })
+                                    })
+                                }
+                            });
+                        }
+                    })
+                }
+            })
+
+        var index = 0;
+        modifiedData.forEach((modifieddata)=>{
+                var filteredCommodity   = modifiedData.filter((data) => data.commodityName === modifieddata.commodityName);
+                var filteredOffices     = modifiedData.filter((data) => data.commodityName === modifieddata.commodityName && data.officeName === modifieddata.officeName);
+                var filteredAuthorities = modifiedData.filter((data) => data.commodityName === modifieddata.commodityName && data.officeName === modifieddata.officeName && data.authorityName === modifieddata.authorityName);
+
+                var  config = [];
+                config.push(
+                    { 
+                        key:'commodityName' , 
+                        rowSpan:filteredCommodity.length,
+                        commodityName:modifieddata.commodityName
+                    },
+                    { 
+                        key:'officeName'    , 
+                        rowSpan:filteredOffices.length,
+                        officeName:modifieddata.officeName
+                    },
+                    { 
+                        key:'authorityName' , 
+                        rowSpan:filteredAuthorities.length,
+                        authorityName:modifieddata.authorityName
+                    },
+
+                    
+                );
+
+                if(finalinzeModifiedData__first.find((data)=> data.commodityName === modifieddata.commodityName)){
+                    let data ={...modifieddata};
+                    data.commodityName  = ''; 
+                    data.config = config;
+                    finalinzeModifiedData__first.push(data)
+                }
+                else{
+                    index++;
+                    modifieddata.config = config;
+                    modifieddata.index  = index;
+                    finalinzeModifiedData__first.push(modifieddata);
+                    console.log(index);
+                }
+                
+            })
+
+        finalinzeModifiedData__first.forEach((modifieddata)=>{
+                if(finalinzeModifiedData__second.find((data)=> data.officeName === modifieddata.officeName && data.authorityName === modifieddata.authorityName)){
+                    modifieddata.authorityName = '';
+                    finalinzeModifiedData__second.push(modifieddata); 
+                }else{
+                    finalinzeModifiedData__second.push(modifieddata); 
+                } 
+            })
+
+        finalinzeModifiedData__second.forEach((modifieddata)=>{
+                if(finalinzeModifiedData__third.find((data)=> data.officeName === modifieddata.officeName)){
+                    modifieddata.officeName = '';
+                    finalinzeModifiedData__third.push(modifieddata); 
+                }else{
+                    finalinzeModifiedData__third.push(modifieddata); 
+                } 
+            })
+
+        console.log(finalinzeModifiedData__third);
+
+        return finalinzeModifiedData__third;
+    }
+
     function renderAuctionLotsTable(){
         var table;   
 
-        var downloadRenderer = function(param){
+        var viewBtnRenderer = function(param){
             var span =  document.createElement('span');
                 span.classList.add('download-icon');
-                span.innerHTML = '<a><i class="icon-download"></i></a>';
+                span.innerHTML = '<a><i class="fa-solid fa-eye"></i>';
+                span.addEventListener('click',()=>openNewWindow(param.data))   
             return  span;
         }
 
+        var indexRowSpan = function(param){
+            if('config' in param.data && param.data[param.colDef.field] !== ''){
+                console.log(param.data.config[0].rowSpan);
+                return param.data.config[0].rowSpan;
+            }
+        }
+
+        var comRowspan = function(param){
+            if('config' in param.data && param.data[param.colDef.field] !== ''){
+                console.log(param.data.config[0].rowSpan);
+                return param.data.config[0].rowSpan;
+            }
+        }
+
+        var officeRowspan = function(param){
+            if('config' in param.data && param.data[param.colDef.field] !== ''){
+                console.log(param.data.config[1].rowSpan);
+                return param.data.config[1].rowSpan;
+            }
+        }
+
+        var authorityRowspan = function(param){
+            if('config' in param.data && param.data[param.colDef.field] !== ''){
+                console.log(param.data.config[2].rowSpan);
+                return param.data.config[2].rowSpan;
+            }
+        }
+
         const columnDefs = [
-            {headerName:"SR_No"              , field:"sr_no",      resizable:true,width:"70px"},
-            {headerName:"Depot"              , field:"depot",      resizable:true},
-            {headerName:"Lot No"             , field:"lot_no",      resizable:true,width:"70px"},
-            {headerName:"Species"            , field:"species",      resizable:true,width:"100px"},
-            {headerName:"Material Type"      , field:"material_type",      resizable:true,width:"120px"},
-            {headerName:"Category"           , field:"category",      resizable:true,width:"100px"},
-            {headerName:"Length"             , field:"length",      resizable:true,width:"100px"},
-            {headerName:"Quantity(No)"       , field:"quantity_no",      resizable:true,width:"155x"},
-            {headerName:"Volume(Cu.Mtr.)"    , field:"volume_cu.mtr",      resizable:true},
-            {headerName:"Auction Starts On"  , field:"auction_starts_on",      resizable:true,width:"142x"},
-        ];
+            {
+                headerName: 'Auction Information',
+                children: [
+                    // {
+                    //     headerName:"S.N.", field:"index",
+                    //     resizable:true,width:'50px',
+                    //     cellRenderer:'',
+                    //     rowSpan:indexRowSpan,
+                    //     cellClassRules: {
+                    //         'cell-span': " value !== '' ",
+                    //     },
+                    // },
+                    {headerName:"Commodity", field:"commodityName",resizable:true,width:'100px', 
+                    rowSpan: comRowspan,
+                    cellClassRules: {
+                        'cell-span': " value !== '' ",
+                    },
+                },
+                    {headerName:"Office / Department Name ", field:"officeName",resizable:true,
+                    rowSpan:officeRowspan,
+                    cellClassRules: {
+                        'cell-span': " value !== '' ",
+                    },},
+                    {headerName:"Authority Name", field:"authorityName",resizable:true,rowSpan:authorityRowspan,
+                    cellClassRules: {
+                        'cell-span': " value !== '' ",
+                    },},
+                    {headerName:"e-auction ID", field:"auction_id",resizable:true,width:'92px'},
+                ]
+            },
+            {
+                headerName: 'Auction Date',
+                children:[
+                    {headerName:"Start Date",field:"startDate",resizable:true,width:'86px'},
+                    {headerName:"End Date",field:"endDate",resizable:true,width:'86px'},
+                ]
+            },
+            {
+                headerName:'View Lots',
+                children:[
+                    {headerName:"Total Lots", field:"totalLots",resizable:true,width:'80px'},
+                    {headerName:"View", field:"view",resizable:true,width:'70px',cellRenderer:viewBtnRenderer},
+                ]
+            }
+        ]; 
 
-        var rowData = [];
+        // var rowData = [
+        //     {sr_no:"1",commodity:"Timber",office_department_name:"Gondia",authority_name:"Chandraprakash Bagde",eauction_id:"DESPT0001",start_date:"2023-03-01",end_date:"2023-03-10",total_lots:"50"},
+        //     {sr_no:"2",commodity:"Timber",office_department_name:"Gondia",authority_name:"Chandraprakash Bagde",eauction_id:"DESPT0001",start_date:"2023-03-01",end_date:"2023-03-10",total_lots:"50"},
+        //     {sr_no:"3",commodity:"Timber",office_department_name:"Gondia",authority_name:"Chandraprakash Bagde",eauction_id:"DESPT0001",start_date:"2023-03-01",end_date:"2023-03-10",total_lots:"50"},
+        //     {sr_no:"4",commodity:"Timber",office_department_name:"Gondia",authority_name:"Chandraprakash Bagde",eauction_id:"DESPT0001",start_date:"2023-03-01",end_date:"2023-03-10",total_lots:"50"},
+        //     {sr_no:"5",commodity:"Timber",office_department_name:"Gondia",authority_name:"Chandraprakash Bagde",eauction_id:"DESPT0001",start_date:"2023-03-01",end_date:"2023-03-10",total_lots:"50"},
+        //     {sr_no:"6",commodity:"Timber",office_department_name:"Bhandara",authority_name:"Chandraprakash Bagde",eauction_id:"DESPT0001",start_date:"2023-03-01",end_date:"2023-03-10",total_lots:"50"},
+        //     {sr_no:"7",commodity:"Timber",office_department_name:"Bhandara",authority_name:"Chandraprakash Bagde",eauction_id:"DESPT0001",start_date:"2023-03-01",end_date:"2023-03-10",total_lots:"50"},
+        //     {sr_no:"8",commodity:"Timber",office_department_name:"Bhandara",authority_name:"Chandraprakash Bagde",eauction_id:"DESPT0001",start_date:"2023-03-01",end_date:"2023-03-10",total_lots:"50"},
+        //     {sr_no:"9",commodity:"Timber",office_department_name:"Bhandara",authority_name:"Chandraprakash Bagde",eauction_id:"DESPT0001",start_date:"2023-03-01",end_date:"2023-03-10",total_lots:"50"},
+        //     {sr_no:"10",commodity:"Timber",office_department_name:"Bhandara",authority_name:"Chandraprakash Bagde",eauction_id:"DESPT0001",start_date:"2023-03-01",end_date:"2023-03-10",total_lots:"50"}
+        // ];
 
-        var gridOptions = {columnDefs,rowData, pagination: true,};
+        var tableData =  [
+    {
+        commodityName:"Timber",
+        offices:[
+            {
+                officeName:"Gondia",
+                authorities:[
+                    {
+                        authorityName: "authority 1",
+                        auctions:[
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            },
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            },
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            }
+                        ]
+                    },
+                    {
+                        authorityName: "authority 2",
+                        auctions:[
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            },
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            },
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            }
+                        ]
+                    },
+                    {
+                        authorityName: "authority 3",
+                        auctions:[
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            },
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            },
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            }
+                        ]
+                    }
+                    ,
+                    {
+                        authorityName: "authority 4",
+                        auctions:[
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            },
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            },
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                officeName:"Latur",
+                authorities:[
+                    {
+                        authorityName: "authority 1",
+                        auctions:[
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            },
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            },
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            }
+                        ]
+                    },
+                    {
+                        authorityName: "authority 2",
+                        auctions:[
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            },
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            },
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            }
+                        ]
+                    },
+                    {
+                        authorityName: "authority 3",
+                        auctions:[
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            },
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            },
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            }
+                        ]
+                    }
+                ]
+            }
 
-        table = new agGrid.Grid(document.querySelector("#lot-list-table"),gridOptions);
+        ]
+    },
+    {
+        commodityName:"Tendu",
+        offices:[
+            {
+                officeName:"Vardha",
+                authorities:[
+                    {
+                        authorityName: "authority 1",
+                        auctions:[
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            },
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            },
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            }
+                        ]
+                    },
+                    {
+                        authorityName: "authority 2",
+                        auctions:[
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            },
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            },
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            }
+                        ]
+                    },
+                    {
+                        authorityName: "authority 3",
+                        auctions:[
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            },
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            },
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                officeName:"Bhandara",
+                authorities:[
+                    {
+                        authorityName: "authority 1",
+                        auctions:[
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            },
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            },
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            }
+                        ]
+                    },
+                    {
+                        authorityName: "authority 2",
+                        auctions:[
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            },
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            },
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            }
+                        ]
+                    },
+                    {
+                        authorityName: "authority 3",
+                        auctions:[
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            },
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            },
+                            {
+                                auction_id:"00001",
+                                startDate:"2023-03-01",
+                                endDate:"2023-03-02",
+                                totalLots:"50"
+                            }
+                        ]
+                    }
+                ]
+            }
+
+        ]
+    }
+  ];
+
+        var gridOptions = {
+            columnDefs,
+            rowData:DataModifier(tableData), 
+            pagination: true,
+            suppressRowTransform: true,
+        };
+
+        table = new agGrid.Grid(document.querySelector("#lot-list-table"),gridOptions);        
+    }
+
+    function openNewWindow(data) {
         
+        var myWindow = window.open("", "MsgWindow", "width=800,height=600");
+            if(myWindow.document.querySelector('body')){
+                myWindow.document.querySelector('body').innerHTML = '';
+            }
+            myWindow.document.write(`
+            <link rel="stylesheet" href="./assets/template/css/style.css">
+            <link rel="stylesheet" href="./assets/template/css/media.css">
+            <link rel="stylesheet" href="./assets/template/css/revolution.css" media="screen">
+            <link rel="stylesheet" href="./assets/template/css/media-slideshow.css" media="screen">
+            <link rel="stylesheet" href="./assets/js/libs/ag-grid/css/ag-grid.min.css" >
+            <link rel="stylesheet" href="./assets/js/libs/ag-grid/css/custome-css.css">
+            <link rel="stylesheet" href="./assets/js/libs/ag-grid/themes/ag-theme-balham.css">
+            <style>
+                @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+                body{
+                    background-color:#34495e;
+                    margin:0;
+                    padding:0;
+                    font-family: 'Roboto', sans-serif;
+                }
+
+                .table-wrapper{
+                    // background-color:red;
+                    // border-top-left-radius:5px;
+                    // border-top-right-radius:5px;
+                }
+
+                .info-wrapper{
+                    background-color:#fff;
+                    border-radius:5px;
+                    padding-top:8px;
+                    padding-bottom:8px;
+                    padding-left:10px;
+                    margin-bottom:10px;
+                    box-shadow: -11px 0px 100px 10px rgba(0,0,0,0.1);
+                    margin-top:10px
+                }
+
+                form label{
+					font-weight:700 !important;
+				}
+
+                .heading{
+                    font-weight:600;
+                    font-size:12px;
+                }
+
+                .row{
+                    background-color:white;
+                    border-radius: 10px;
+                    box-shadow: 5px 0px 38px 44px rgba(0,0,0,0.1);
+                }
+
+                .heading{
+                    font-size:15px;
+                    color:#1abc9c;
+                }
+
+                .number{
+                    color:#fff;
+                }
+                </style>
+         
+                <div class="container-fluid">
+                    <div class="">
+                        <div class="">    
+    
+                            <form>
+                                <div class="row">
+                                    <div class="four column">
+                                        <label for="">Office/Department:</label>
+										<select id="depotId" style="width: 70%;" disabled>
+                                            <option value="0">Gondia</option>    
+                                        </select>
+                                    </div>
+
+
+									<div class="four column">
+                                        <label for="">Species:</label>
+										<select id="spcId" style="width:70%;">
+											<option value="0">All</option><option value="8">Acacia Tortilis</option><option value="9">Ailanthus</option><option value="13">Aistonia</option><option value="25">Bakain</option><option value="34">Bamboo</option><option value="28">Beri</option><option value="14">Cassias Siamea</option><option value="16">Chandan</option><option value="43">Chir</option><option value="39">Dek</option><option value="1">Euc</option><option value="6">Ficus </option><option value="11">Frash</option><option value="35">Gullar</option><option value="31">Gumar</option><option value="10">Jall</option><option value="38">Jamoya</option><option value="19">Jamun</option><option value="32">Jandi</option><option value="24">Kadamb</option><option value="30">Kaijelia</option><option value="7">Khair</option><option value="2">Kikar</option><option value="27">Lasura</option><option value="18">Mango</option><option value="3">Misc</option><option value="36">Misc.1</option><option value="37">Misc.2</option><option value="33">Mix</option><option value="41">Muskut</option><option value="20">Neem</option><option value="21">Other Misc</option><option value="12">Papadi</option><option value="17">Pipal</option><option value="15">PJ</option><option value="46">Ply Board 12mm</option><option value="47">Ply Board 18mm</option><option value="45">Ply Board 6mm</option><option value="44">Poplar</option><option value="40">Sain</option><option value="42">Sawn Dust</option><option value="4">Shisham</option><option value="29">Simbhal</option><option value="23">Siras</option><option value="50">Sunmica</option><option value="22">Teak</option><option value="48">Teak ply 1mm</option><option value="49">Teak ply 4mm</option><option value="26">Toont</option>
+										</select>
+                                    </div>
+
+                                    <div class="four column">
+                                        <label for="">Condition :</label>
+                                        <select id="agncyId" style="width:70%">
+										    <option value="0">Select</option><option value="3"> Cut Piece </option>	<option value="1"> D/Dry </option>	<option value="2"> Green </option>	
+										</select>
+                                    </div>
+                                    <div class="four column">
+                                        <label for="">Material Type:</label>
+                                        <select id="mattypId" style="width:70%">
+											<option value="0">All</option><option value="11">Bahi No.1</option><option value="12">Bahi No.2</option><option value="8">Burada</option><option value="13">Damdma</option><option value="2">Fuelwood</option><option value="7">Ghutka</option><option value="15">Gitti</option><option value="14">Manjhola</option><option value="10">Mix</option><option value="17">Mix Ply</option><option value="6">Randha Chilka</option><option value="9">Rejected Sawn Timber</option><option value="5">Sawn Fuelwood</option><option value="4">Sawn Timber</option><option value="3">Stumps</option><option value="1">Timber</option><option value="16">Wood Crate</option>
+										</select>
+                                    </div>
+                                    <div class="four column">
+                                        <label for="">Length:</label>
+                                        <select id="lngthId" style="width:70%">
+											<option value="0">All</option><option value="1">0.60</option><option value="2">0.90</option><option value="56">0.90 - 1.50</option><option value="13">0.90-1.90</option><option value="58">1 - 1.20</option><option value="171">1 - 3</option><option value="17">1-1.30</option><option value="42">1-1.50</option><option value="39">1-1.60</option><option value="25">1-1.80</option><option value="33">1-1.90</option><option value="20">1-2</option><option value="24">1-2.10</option><option value="19">1-2.20</option><option value="30">1-2.40</option><option value="32">1-2.50</option><option value="3">1.00</option><option value="119">1.00 - 1.10</option><option value="90">1.00 - 2.80</option><option value="106">1.00-1.40</option><option value="120">1.00-1.70</option><option value="110">1.00-2.60</option><option value="89">1.10</option><option value="80">1.10 - 1.50</option><option value="73">1.10 - 1.80</option><option value="81">1.10 - 1.90</option><option value="77">1.10 - 2.10</option><option value="72">1.10 - 2.20</option><option value="139">1.10-2.50</option><option value="121">1.10-2.90</option><option value="4">1.20</option><option value="176">1.20 - 1.40</option><option value="115">1.20 - 1.60</option><option value="75">1.20 - 1.70</option><option value="67">1.20 - 1.80</option><option value="59">1.20 - 2</option><option value="68">1.20 - 2.20</option><option value="114">1.20 - 2.50</option><option value="166">1.20 - 2.80</option><option value="102">1.20-1.90</option><option value="123">1.30</option><option value="79">1.30 - 1.60</option><option value="83">1.30 - 1.80</option><option value="66">1.30 - 1.90</option><option value="62">1.30 - 2.00</option><option value="92">1.30 - 2.10</option><option value="61">1.30 - 2.20</option><option value="168">1.30 - 2.30</option><option value="65">1.30 - 2.50</option><option value="49">1.30-1.50</option><option value="124">1.30-2.60</option><option value="122">1.30-2.70</option><option value="170">1.40 - 2.10</option><option value="177">1.40 - 2.20</option><option value="70">1.40 - 2.30</option><option value="78">1.40 - 2.50</option><option value="104">1.40-1.80</option><option value="5">1.50</option><option value="178">1.50 - 2.30</option><option value="63">1.50 - 2.40</option><option value="69">1.50 - 2.50</option><option value="142">1.50-1.90</option><option value="105">1.50-2.00</option><option value="94">1.50-2.10</option><option value="50">1.50-2.20</option><option value="138">1.50-2.60</option><option value="18">1.6-2.2</option><option value="64">1.60</option><option value="52">1.60 - 1.90</option><option value="60">1.60 - 2.00</option><option value="55">1.60 - 2.50</option><option value="173">1.60 - 2.80</option><option value="144">1.60 - 3.00</option><option value="127">1.60-1.80</option><option value="31">1.60-2.10</option><option value="29">1.60-2.70</option><option value="41">1.60-2.90</option><option value="21">1.70</option><option value="112">1.70 - 2.10</option><option value="57">1.70 - 2.20</option><option value="84">1.70 - 2.40</option><option value="76">1.70 - 2.50</option><option value="22">1.80</option><option value="134">1.80 - 2</option><option value="82">1.80 - 2.10</option><option value="71">1.80 - 2.50</option><option value="151">1.80 - 2.80</option><option value="48">1.80-2.20</option><option value="107">1.80-3.00</option><option value="6">1.90</option><option value="179">1.90 - 2.00</option><option value="175">1.90 - 2.20</option><option value="143">1.90 - 2.30</option><option value="88">1.90 - 2.60</option><option value="93">1.90 - 3.00</option><option value="26">1.90-2.10</option><option value="40">1.90-2.20</option><option value="36">1.90-2.40</option><option value="38">1.90-2.50</option><option value="174">100 - 1.70</option><option value="153">100 - 300</option><option value="156">150 - 290</option><option value="155">180 - 190</option><option value="51">2-2.50</option><option value="167">2.00</option><option value="86">2.00 - 2.30</option><option value="140">2.00 - 2.40</option><option value="117">2.00 - 2.80</option><option value="169">2.00 - 3.00</option><option value="14">2.00-2.20</option><option value="27">2.10</option><option value="136">2.10 - 2.40</option><option value="74">2.10 - 2.60</option><option value="145">2.10 - 2.80</option><option value="34">2.10-2.20</option><option value="45">2.10-2.30</option><option value="35">2.10-2.50</option><option value="87">2.2 - 3.10</option><option value="7">2.20</option><option value="165">2.20 - 2.30</option><option value="108">2.20-2.40</option><option value="23">2.20-2.50</option><option value="101">2.20-2.60</option><option value="125">2.20-2.70</option><option value="43">2.20-2.80</option><option value="103">2.20-3.00</option><option value="28">2.30</option><option value="54">2.30 - 2.60</option><option value="113">2.30 - 2.70</option><option value="152">2.30 - 2.80</option><option value="44">2.30-2.50</option><option value="126">2.40</option><option value="132">2.40 - 2.60</option><option value="111">2.40 - 2.70</option><option value="172">2.40 - 2.80</option><option value="37">2.40-2.50</option><option value="149">2.5' * 2.5' * 2'</option><option value="148">2.5' * 2.5' * 5'</option><option value="8">2.50</option><option value="158">2.50 - 2.70</option><option value="85">2.50 - 3.00</option><option value="147">2.50 - 3.30</option><option value="128">2.50-2.60</option><option value="15">2.50-2.80</option><option value="47">2.50-2.90</option><option value="91">2.60</option><option value="131">2.60 - 2.80</option><option value="98">2.60-2.70</option><option value="53">2.70</option><option value="133">2.70 - 2.10</option><option value="135">2.70 - 2.90</option><option value="96">2.70 - 3.00</option><option value="46">2.70-2.80</option><option value="99">2.70-3.00</option><option value="9">2.80</option><option value="164">2.80 - 3.10</option><option value="16">2.80-Above</option><option value="109">2.90</option><option value="157">210 - 270</option><option value="130">3 - 3.30</option><option value="95">3.00</option><option value="97">3.00-3.40</option><option value="137">3.10</option><option value="160">3.2 - 3.4</option><option value="10">3.20</option><option value="161">3.20 - 3.30</option><option value="163">3.20 - 3.40</option><option value="100">3.30</option><option value="159">3.40</option><option value="129">3.50</option><option value="146">3.50 - 4.10</option><option value="11">3.70</option><option value="154">360</option><option value="162">4.10</option><option value="141">4.30</option><option value="150">5' * 2'</option><option value="118">7</option><option value="116">7.00</option><option value="12">All Size</option>
+										</select>
+                                    </div>
+                                    <div class="four column">
+                                        <label for="">Category:</label>
+                                        <select id="grthId" style="width:70%">
+											<option value="0">All</option><option value="1">Above</option><option value="2">Below</option><option value="7">Double Above</option><option value="4">G-I</option><option value="10">G-I Peelable14"Above</option><option value="13">G-I White</option><option value="5">G-II</option><option value="3">H&amp;D</option><option value="14">leaves and twigs</option><option value="8">Mix Material</option><option value="12">None</option><option value="11">Scrap</option><option value="6">Stumps</option>
+										</select>
+                                    </div>
+                                    <div class="twelve column text-center">
+                                        <hr>
+                                        <a class="button small 283849" href="#"> 
+                                           Search <i class="icon-search"></i>    
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>    
+                    </div>
+                    <section class="lots-table" style="margin-top:10px;">
+                        <div style="">
+                            <a class="button small blue" href="#"> 
+                                Export <i class="icon-file"></i>    
+                            </a>
+
+                           <span>
+                                <span class="heading">Total Lots:</span>     &nbsp;&nbsp;<span class="number">40</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <span class="heading">Total Quantity:</span> &nbsp;&nbsp;<span class="number">40</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <span class="heading">Total Volume:</span> &nbsp;&nbsp;<span class="number">40</span>
+                            </span>
+                        </div>
+                        <div id="view-lot-table" class="ag-theme-balham" style="height:367px;">
+                        </div>
+                    </section>    
+                </div>
+            `)
+            
+            renderLotsTable(myWindow);
+
+    }
+
+    function renderLotsTable(windowName,data){
+        const columnDefs = [
+            // {headerName:"S.N.",         field:"sr_no",resizable:true,valueGetter: "node.rowIndex + 1",width:'60px'},
+            {headerName:"Depot",   field:"depot",resizable:true},
+            {headerName:"Lot No",   field:"lot_no",resizable:true,width:'90px'},
+            {headerName:"Species",   field:"species",resizable:true,width:'110px'},
+            {headerName:"Material Type",   field:"material_type",resizable:true,width:'120px'},
+            {headerName:"Category",   field:"category",resizable:true,width:'120px'},
+            {headerName:"Length",   field:"length",resizable:true,width:'120px'},
+            {headerName:"Quantity(No)",   field:"quantity_no",resizable:true,width:'100px'},
+            {headerName:"Volume(Cu.Mtr.)",   field:"volume_cu_mtr",resizable:true,width:'130px'},
+            {headerName:"Auction Starts On",   
+            field:"auction_starts_on",resizable:true,width:'270px',
+            cellStyle: {'background-color': '#c4e8ff'}},
+
+        ]; 
+
+        var gridOptions = {
+            columnDefs,
+            rowData:[
+            {lot_no:"00001",    depot:"Depot",   species:"species"  ,material_type:"Material Type",category:"category",length:"Length",   quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"00002",    depot:"Depot",   species:"species"  ,material_type:"Material Type",category:"category",length:"Length",   quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"00003",    depot:"Depot",   species:"species"  ,material_type:"Material Type",category:"category",length:"Length",   quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"00004",    depot:"Depot",   species:"species"  ,material_type:"Material Type",category:"category",length:"Length",   quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"00005",    depot:"Depot",   species:"species"  ,material_type:"Material Type",category:"category",length:"Length",   quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"00006",    depot:"Depot",   species:"species"  ,material_type:"Material Type",category:"category",length:"Length",   quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"00007",    depot:"Depot",   species:"species"  ,material_type:"Material Type",category:"category",length:"Length",   quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"00008",    depot:"Depot",   species:"species"  ,material_type:"Material Type",category:"category",length:"Length",   quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"00009",    depot:"Depot",   species:"species"  ,material_type:"Material Type",category:"category",length:"Length",   quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000010",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000011",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000012",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000013",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000014",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000015",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000016",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000017",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000018",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000019",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000020",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000021",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000022",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000023",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000024",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000025",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000026",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000027",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000028",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000029",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000030",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000031",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000032",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000033",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000034",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000035",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000036",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000037",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000038",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000039",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            {lot_no:"000040",   depot:"Depot",  species:"species" ,material_type:"Material Type",category:"category",length:"Length",  quantity_no:"Quantity(No)", volume_cu_mtr:"Volume(Cu.Mtr.)",auction_starts_on:"2023-03-02 9:00:00 am"},
+            ], 
+            pagination: true,
+            suppressRowTransform: true,
+        };
+
+		$("#view-lot-table").empty();
+
+        new agGrid.Grid(windowName.document.querySelector("#view-lot-table"),gridOptions);    
+
     }
 
 
-
 </script>
+
 <style>
 
     .download-icon{
@@ -47,8 +769,31 @@
 
     .table-wrapper{
         box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.1);
+        padding: 1px;
+        border: 1px solid rgba(0,0,0,0.1);
     }
+
+    .search-wrapper{
+        padding-left: 5px;
+        box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.1);
+        border-radius: 5px;
+    }
+
+    a{
+        cursor: pointer;
+    }
+
+    .cell-span{
+        background-color:  #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid rgb(146, 145, 145);
+        /* color: #ffff; */
+    }
+
 </style>
+
 <!-- pagetitle start here -->
 <section id="pagetitle-container">
 	<div class="row">
@@ -60,8 +805,55 @@
 </section>
 <!-- pagetitle end here -->
 
+<div class="row">
+    <div class="eight column" style="padding-bottom: 0px !important;">
+        <div class="search-wrapper">
+            <div class="row"  style="padding-bottom: 0px !important;">
+                <div class="four column">
+                    <label>Select Commodity <em>*</em></label>                           
+                    <select name="" id="">
+                        <option value="all">All</option>
+                        <option value="timber">Timber</option>
+                        <option value="all">Bambu</option>
+                        <option value="srap">Scrap</option>
+                        <option value="firewood">Firewood</option>
+                    </select>
+                </div>
+                <div class="four column">
+                    <label>Select Department <em>*</em></label>                           
+                    <select name="" id="">
+                        <option value="all">All</option>
+                        <option value="timber">Nagpur</option>
+                        <option value="all">Gondia</option>
+                        <option value="srap">Bhandara</option>
+                        <option value="firewood">Pune</option>
+                    </select>
+                </div>
+                <div class="four column">
+            
+                    <div style="margin-top: 23px;">
+                        <a class="button small 283849" href="#"> 
+                        <i class="icon-search"></i>    
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="four column">
+        <a class="">
+            Switch to next tab with same Details>>>>>>>>>
+        </a>
+    </div>
+</div>
+
 <section class="lots-table">
-    <div id="lot-list-table" class="ag-theme-balham table-wrapper" style="height:400px;width: 1260px;margin: auto;">
-    
+    <div class="row">
+        <div class="twelve column">
+            <div class="table-wrapper">
+                <div id="lot-list-table" class="ag-theme-balham" style="height:400px;"></div>
+            </div>
+            <div style="margin-top: 10px;"></div>
+        </div>
     </div>
 </section>

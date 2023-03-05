@@ -1,241 +1,564 @@
 <script>
-
     functionsInitializr(()=>{
       renderAuctionLotsTable()
     })
+
+    function DataModifier(PROVIDED_DATA){
+        var finalinzeModifiedData__first  = [];
+        var finalinzeModifiedData__second = [];
+        var finalinzeModifiedData__third  = [];
+        var modifiedData = [];
+
+        PROVIDED_DATA.forEach((comdata)=>{
+                if('offices' in comdata){
+                    comdata.offices.forEach((officeData)=>{
+                        if('authorities' in officeData){
+                            officeData.authorities.forEach((authorityData)=>{
+                                if('auctions' in authorityData){
+                                    authorityData.auctions.forEach((auctionData)=>{
+                                        modifiedData.push({
+                                            commodityName:comdata.commodityName,
+                                            officeName:officeData.officeName,
+                                            authorityName:authorityData.authorityName,
+                                            auction_id:auctionData.auction_id,
+                                            soldDate:auctionData.soldDate,
+                                            startDate:auctionData.startDate,
+                                            endDate:auctionData.endDate,
+                                            totalLots:auctionData.totalLots,
+                                        })
+                                    })
+                                }
+                            });
+                        }
+                    })
+                }
+            })
+
+        modifiedData.forEach((modifieddata)=>{
+                var filteredCommodity   = modifiedData.filter((data) => data.commodityName === modifieddata.commodityName);
+                var filteredOffices     = modifiedData.filter((data) => data.commodityName === modifieddata.commodityName && data.officeName === modifieddata.officeName);
+                var filteredAuthorities = modifiedData.filter((data) => data.commodityName === modifieddata.commodityName && data.officeName === modifieddata.officeName && data.authorityName === modifieddata.authorityName);
+
+                var  config = [];
+                config.push(
+                    { key:'commodityName' , rowSpan:filteredCommodity.length},
+                    { key:'officeName'    , rowSpan:filteredOffices.length},
+                    { key:'authorityName' , rowSpan:filteredAuthorities.length},
+                );
+
+                if(finalinzeModifiedData__first.find((data)=> data.commodityName === modifieddata.commodityName)){
+                    let data ={...modifieddata};
+                    data.commodityName  = ''; 
+                    data.config = config;
+                    finalinzeModifiedData__first.push(data)
+                }
+                else{
+                    modifieddata.config = config;
+                    finalinzeModifiedData__first.push(modifieddata)
+                }
+
+                
+            })
+
+        finalinzeModifiedData__first.forEach((modifieddata)=>{
+                if(finalinzeModifiedData__second.find((data)=> data.officeName === modifieddata.officeName && data.authorityName === modifieddata.authorityName)){
+                    modifieddata.authorityName = '';
+                    finalinzeModifiedData__second.push(modifieddata); 
+                }else{
+                    finalinzeModifiedData__second.push(modifieddata); 
+                } 
+            })
+
+        finalinzeModifiedData__second.forEach((modifieddata)=>{
+                if(finalinzeModifiedData__third.find((data)=> data.officeName === modifieddata.officeName)){
+                    modifieddata.officeName = '';
+                    finalinzeModifiedData__third.push(modifieddata); 
+                }else{
+                    finalinzeModifiedData__third.push(modifieddata); 
+                } 
+            })
+
+        console.log(finalinzeModifiedData__third);
+
+        return finalinzeModifiedData__third;
+    }
 
     function renderAuctionLotsTable(){
         var table;   
 
         var downloadRenderer = function(param){
-            var span =  document.createElement('span');
-                span.classList.add('download-icon');
-                span.innerHTML = '<a><i class="icon-download"></i></a>';
-            return  span;
+          var span =  document.createElement('span');
+          span.classList.add('download-icon');
+          span.innerHTML = '<a><i class="icon-download"></i></a>';
+          return  span;
+        }
+
+        var comRowspan = function(param){
+            if('config' in param.data && param.data[param.colDef.field] !== ''){
+                console.log(param.data.config[0].rowSpan);
+                return param.data.config[0].rowSpan;
+            }
+        }
+
+        var officeRowspan = function(param){
+            if('config' in param.data && param.data[param.colDef.field] !== ''){
+                console.log(param.data.config[1].rowSpan);
+                return param.data.config[1].rowSpan;
+            }
+        }
+
+        var authorityRowspan = function(param){
+            if('config' in param.data && param.data[param.colDef.field] !== ''){
+                console.log(param.data.config[2].rowSpan);
+                return param.data.config[2].rowSpan;
+            }
         }
 
         const columnDefs = [
-            {headerName:"Division"      , field:"depot",    resizable:true,width:"260px"},
-            {headerName:"Auction Date"  , field:"aucdt",    resizable:true},
-            {headerName:"Sold Date"     , field:"slddt",    resizable:true},
-            {headerName:"e-Auction No." , field:"eaucno",   resizable:true,width:"217px"},
-            {headerName:"Download"      , field:"savdFile", resizable:true,width:"80px",cellRenderer:downloadRenderer},
-            {headername:"aucdcid"       , field:"aucdcid",hide:true},
-            {headerName:"depotid"       , field:"depotid",hide:true}
+                {
+                    headerName: 'Auction Information',
+                    children: [
+                        // {headerName:"S.N.", field:"sr_no",resizable:true,width:'50px',valueGetter: "node.rowIndex + 1"},
+                        {headerName:"Commodity", field:"commodityName",resizable:true,width:'100px', 
+                        rowSpan: comRowspan,
+                        cellClassRules: {
+                            'cell-span': " value !== '' ",
+                        },
+                        },
+                        {headerName:"Office / Department Name ", field:"officeName",resizable:true,
+                        rowSpan:officeRowspan,
+                        cellClassRules: {
+                            'cell-span': " value !== '' ",
+                        },},
+                        {headerName:"Authority Name", field:"authorityName",resizable:true,rowSpan:authorityRowspan,width:'200px',
+                        cellClassRules: {
+                            'cell-span': " value !== '' ",
+                        },},
+                        {headerName:"e-auction ID", field:"auction_id",resizable:true},
+                        {headerName:"Sold Date",
+                          field:"soldDate",
+                          resizable:true,
+                          width:'86px',
+                          cellStyle: {'color':'red',
+                          'background-color':"rgba(245, 233, 233, 0.912)"}
+                        },
+                    ]
+                },
+                {
+                    headerName: 'Auction Date',
+                    children:[
+                        {headerName:"Start Date",field:"startDate",resizable:true,width:'86px'},
+                        {headerName:"End Date",field:"endDate",resizable:true,width:'86px'},
+                    ]
+                },
+                {
+                    headerName:'Download Info',
+                    children:[
+                        {headerName:"Total Lots", field:"totalLots",resizable:true,width:'80px'},
+                        {headerName:"Download", field:"view",resizable:true,width:'100px',cellRenderer:downloadRenderer},
+                    ]
+                }
+            ]; 
+
+        var tableData =  [
+          {
+            commodityName:"Timber",
+            offices:[
+                {
+                    officeName:"Gondia",
+                    authorities:[
+                        {
+                            authorityName: "authority 1",
+                            auctions:[
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                },
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                },
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                }
+                            ]
+                        },
+                        {
+                            authorityName: "authority 2",
+                            auctions:[
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                },
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                },
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                }
+                            ]
+                        },
+                        {
+                            authorityName: "authority 3",
+                            auctions:[
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                },
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                },
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                }
+                            ]
+                        }
+                        ,
+                        {
+                            authorityName: "authority 4",
+                            auctions:[
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                },
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                },
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    officeName:"Latur",
+                    authorities:[
+                        {
+                            authorityName: "authority 1",
+                            auctions:[
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                },
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                },
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                }
+                            ]
+                        },
+                        {
+                            authorityName: "authority 2",
+                            auctions:[
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                },
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                },
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                }
+                            ]
+                        },
+                        {
+                            authorityName: "authority 3",
+                            auctions:[
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                },
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                },
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                }
+                            ]
+                        }
+                    ]
+                }
+
+            ]
+        },
+          {
+            commodityName:"Tendu",
+            offices:[
+                {
+                    officeName:"Vardha",
+                    authorities:[
+                        {
+                            authorityName: "authority 1",
+                            auctions:[
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                },
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                },
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                }
+                            ]
+                        },
+                        {
+                            authorityName: "authority 2",
+                            auctions:[
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                },
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                },
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                }
+                            ]
+                        },
+                        {
+                            authorityName: "authority 3",
+                            auctions:[
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                },
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                },
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    officeName:"Bhandara",
+                    authorities:[
+                        {
+                            authorityName: "authority 1",
+                            auctions:[
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                },
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                },
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                }
+                            ]
+                        },
+                        {
+                            authorityName: "authority 2",
+                            auctions:[
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                },
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                },
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                }
+                            ]
+                        },
+                        {
+                            authorityName: "authority 3",
+                            auctions:[
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                },
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                },
+                                {
+                                    auction_id:"00001",
+                                    soldDate:"2023-03-01",
+                                    startDate:"2023-03-01",
+                                    endDate:"2023-03-02",
+                                    totalLots:"50"
+                                }
+                            ]
+                        }
+                    ]
+                }
+
+            ]
+        }
         ];
 
-        var rowData = [
-            {
-            "aucdcid": 425,
-            "depotid": 1,
-            "savdFile": "/home/sparsh/har/aucrprt/425/Sale_Result425.pdf",
-            "eaucno": " Amba//Feb/2023-2",
-            "depot": " Ambala ",
-            "aucdt": "20/02/2023",
-            "slddt": "25/02/2023"
-        },
-            {
-          "aucdcid": 424,
-          "depotid": 1,
-          "savdFile": "/home/sparsh/har/aucrprt/424/Sale_Result424.pdf",
-          "eaucno": " Karn//Feb/2023",
-          "depot": " Karnal ",
-          "aucdt": "17/02/2023",
-          "slddt": "22/02/2023"
-        },
-            {
-          "aucdcid": 423,
-          "depotid": 1,
-          "savdFile": "/home/sparsh/har/aucrprt/423/Sale_Result423.pdf",
-          "eaucno": " Roht//Feb/2023",
-          "depot": " Rohtak ",
-          "aucdt": "18/02/2023",
-          "slddt": "24/02/2023"
-        },
-            {
-          "aucdcid": 422,
-          "depotid": 1,
-          "savdFile": "/home/sparsh/har/aucrprt/422/Sale_Result422.pdf",
-          "eaucno": " Sirs//Feb/2023-2",
-          "depot": " Sirsa ",
-          "aucdt": "16/02/2023",
-          "slddt": "21/02/2023"
-        },
-            {
-          "aucdcid": 421,
-          "depotid": 1,
-          "savdFile": "/home/sparsh/har/aucrprt/421/Sale_Result421.pdf",
-          "eaucno": " Kuru//Feb/2023-2",
-          "depot": " Kurukshetra ",
-          "aucdt": "15/02/2023",
-          "slddt": "20/02/2023"
-        },
-            {
-          "aucdcid": 419,
-          "depotid": 1,
-          "savdFile": "/home/sparsh/har/aucrprt/419/Sale_Result419.pdf",
-          "eaucno": " Amba//Feb/2023",
-          "depot": " Ambala ",
-          "aucdt": "13/02/2023",
-          "slddt": "18/02/2023"
-        },
-            {
-          "aucdcid": 418,
-          "depotid": 1,
-          "savdFile": "/home/sparsh/har/aucrprt/418/Sale_Result418.pdf",
-          "eaucno": " Sirs//Feb/2023",
-          "depot": " Sirsa ",
-          "aucdt": "11/02/2023",
-          "slddt": "15/02/2023"
-        },
-            {
-          "aucdcid": 417,
-          "depotid": 1,
-          "savdFile": "/home/sparsh/har/aucrprt/417/Sale_Result417.pdf",
-          "eaucno": " Yamu//Feb/2023",
-          "depot": " Yamunanagar ",
-          "aucdt": "10/02/2023",
-          "slddt": "13/02/2023"
-        },
-            {
-          "aucdcid": 416,
-          "depotid": 1,
-          "savdFile": "/home/sparsh/har/aucrprt/416/Sale_Result416.pdf",
-          "eaucno": " Roht//Jan/2023-3",
-          "depot": " Rohtak ",
-          "aucdt": "30/01/2023",
-          "slddt": "04/02/2023"
-        },
-            {
-          "aucdcid": 415,
-          "depotid": 1,
-          "savdFile": "/home/sparsh/har/aucrprt/415/Sale_Result415.pdf",
-          "eaucno": " Roht//Jan/2023-2",
-          "depot": " Rohtak ",
-          "aucdt": "30/01/2023",
-          "slddt": "04/02/2023"
-        },
-            {
-          "aucdcid": 414,
-          "depotid": 1,
-          "savdFile": "/home/sparsh/har/aucrprt/414/Sale_Result414.pdf",
-          "eaucno": " Rewa//Jan/2023-3",
-          "depot": " Rewari ",
-          "aucdt": "28/01/2023",
-          "slddt": "01/02/2023"
-        },
-            {
-          "aucdcid": 413,
-          "depotid": 1,
-          "savdFile": "/home/sparsh/har/aucrprt/413/Sale_Result413.pdf",
-          "eaucno": " Roht//Jan/2023",
-          "depot": " Rohtak ",
-          "aucdt": "27/01/2023",
-          "slddt": "31/01/2023"
-        },
-            {
-          "aucdcid": 412,
-          "depotid": 1,
-          "savdFile": "/home/sparsh/har/aucrprt/412/Sale_Result412.pdf",
-          "eaucno": " Kuru//Jan/2023-3",
-          "depot": " Kurukshetra ",
-          "aucdt": "25/01/2023",
-          "slddt": "31/01/2023"
-        },
-            {
-          "aucdcid": 411,
-          "depotid": 1,
-          "savdFile": "/home/sparsh/har/aucrprt/411/Sale_Result411.pdf",
-          "eaucno": " Amba//Jan/2023-2",
-          "depot": " Ambala ",
-          "aucdt": "23/01/2023",
-          "slddt": "27/01/2023"
-        },
-            {
-          "aucdcid": 410,
-          "depotid": 1,
-          "savdFile": "/home/sparsh/har/aucrprt/410/Sale_Result410.pdf",
-          "eaucno": " Hisa//Jan/2023",
-          "depot": " Hisar ",
-          "aucdt": "24/01/2023",
-          "slddt": "28/01/2023"
-        },
-            {
-          "aucdcid": 409,
-          "depotid": 1,
-          "savdFile": "/home/sparsh/har/aucrprt/409/Sale_Result409.pdf",
-          "eaucno": " Guru//Jan/2023",
-          "depot": " Gurugram ",
-          "aucdt": "21/01/2023",
-          "slddt": "27/01/2023"
-        },
-            {
-          "aucdcid": 408,
-          "depotid": 1,
-          "savdFile": "/home/sparsh/har/aucrprt/408/Sale_Result408.pdf",
-          "eaucno": " Yamu//Jan/2023-3",
-          "depot": " Yamunanagar ",
-          "aucdt": "20/01/2023",
-          "slddt": "23/01/2023"
-        },
-            {
-          "aucdcid": 407,
-          "depotid": 1,
-          "savdFile": "/home/sparsh/har/aucrprt/407/Sale_Result407.pdf",
-          "eaucno": " Kuru//Jan/2023-2",
-          "depot": " Kurukshetra ",
-          "aucdt": "19/01/2023",
-          "slddt": "23/01/2023"
-        },
-            {
-          "aucdcid": 404,
-          "depotid": 1,
-          "savdFile": "/home/sparsh/har/aucrprt/404/Sale_Result404.pdf",
-          "eaucno": " Rewa//Jan/2023",
-          "depot": " Rewari ",
-          "aucdt": "18/01/2023",
-          "slddt": "23/01/2023"
-        },
-            {
-          "aucdcid": 403,
-          "depotid": 1,
-          "savdFile": "/home/sparsh/har/aucrprt/403/Sale_Result403.pdf",
-          "eaucno": " Karn//Jan/2023-2",
-          "depot": " Karnal ",
-          "aucdt": "17/01/2023",
-          "slddt": "23/01/2023"
-        },
-            {
-          "aucdcid": 402,
-          "depotid": 1,
-          "savdFile": "/home/sparsh/har/aucrprt/402/Sale_Result402.pdf",
-          "eaucno": " Amba//Jan/2023",
-          "depot": " Ambala ",
-          "aucdt": "16/01/2023",
-          "slddt": "23/01/2023"
-        },
-            {
-          "aucdcid": 401,
-          "depotid": 1,
-          "savdFile": "/home/sparsh/har/aucrprt/401/Sale_Result401.pdf",
-          "eaucno": " Sirs//Jan/2023-2",
-          "depot": " Sirsa ",
-          "aucdt": "14/01/2023",
-          "slddt": "19/01/2023"
-        },
-        ]
+        var gridOptions = {
+            columnDefs,
+            rowData:DataModifier(tableData), 
+            pagination: true,
+            suppressRowTransform: true,
+        };
 
-        var gridOptions = {columnDefs,rowData};
-
-        table = new agGrid.Grid(document.querySelector("#auction-lots-table"),gridOptions);
-        
+        table = new agGrid.Grid(document.querySelector("#auction-lots-table"),gridOptions);        
     }
+
 
 
 
 </script>
 
 <style>
+
+    .cell-span{
+        background-color:  #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid rgb(146, 145, 145);
+        /* color: #ffff; */
+    }
 
     .download-icon{
         font-size: 18px;
@@ -244,6 +567,17 @@
 
     .table-wrapper{
         box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.1);
+    }
+
+    .search-wrapper{
+        padding-left: 5px;
+        box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.1);
+        border-radius: 5px;
+    }
+
+    .abc{
+      background-color:
+       rgba(245, 233, 233, 0.912);
     }
 </style>
 
@@ -265,8 +599,50 @@
 <!-- pagetitle end here -->
 
 
+<div class="row">
+  <div class="eight column" style="padding-bottom: 0px !important;">
+      <div class="search-wrapper">
+          <div class="row"  style="padding-bottom: 0px !important;">
+              <div class="four column">
+                  <label>Select Commodity <em>*</em></label>                           
+                  <select name="" id="">
+                      <option value="all">All</option>
+                      <option value="timber">Timber</option>
+                      <option value="all">Bambu</option>
+                      <option value="srap">Scrap</option>
+                      <option value="firewood">Firewood</option>
+                  </select>
+              </div>
+              <div class="four column">
+                  <label>Select Department <em>*</em></label>                           
+                  <select name="" id="">
+                      <option value="all">All</option>
+                      <option value="timber">Nagpur</option>
+                      <option value="all">Gondia</option>
+                      <option value="srap">Bhandara</option>
+                      <option value="firewood">Pune</option>
+                  </select>
+              </div>
+              <div class="four column">
+          
+                  <div style="margin-top: 23px;">
+                      <a class="button small 283849" href="#"> 
+                      <i class="icon-search"></i>    
+                      </a>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div class="four column">
+      <a class="">
+          Switch to next tab with same Details>>>>>>>>>
+      </a>
+  </div>
+</div>
+
 <section class="lots-table">
-    <div id="auction-lots-table" class="ag-theme-balham table-wrapper" style="height:400px;width: 960px;margin: auto;">
+    <div id="auction-lots-table" class="ag-theme-balham table-wrapper" style="height:400px;width: 1200px;margin: auto;">
     
     </div>
 </section>

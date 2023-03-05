@@ -36,7 +36,11 @@ function sendHttpRequest(url,data) {
 }
 
 
-function PageLaod(pageId){
-    $("#main-content-wrapper").load(`./pages/${pageId}.html`)
+function PageLaod(pageId, commodityId, departmentId){
+    $("#main-content-wrapper").load(`./pages/${pageId}.html`);
+
+    if(commodityId && departmentId){
+        
+    }
 }
 
