@@ -1,7 +1,8 @@
 <script>
 
     functionsInitializr(()=>{
-      renderAuctionLotsTable()
+      switchPageSetup('lot-lists__link')
+      renderAuctionLotsTable();
     })
 
     function DataModifier(PROVIDED_DATA){
@@ -811,7 +812,7 @@
             <div class="row"  style="padding-bottom: 0px !important;">
                 <div class="four column">
                     <label>Select Commodity <em>*</em></label>                           
-                    <select name="" id="">
+                    <select name="" id="commodity-seletor">
                         <option value="all">All</option>
                         <option value="timber">Timber</option>
                         <option value="all">Bambu</option>
@@ -821,7 +822,7 @@
                 </div>
                 <div class="four column">
                     <label>Select Department <em>*</em></label>                           
-                    <select name="" id="">
+                    <select name="" id="department-seletor">
                         <option value="all">All</option>
                         <option value="timber">Nagpur</option>
                         <option value="all">Gondia</option>
@@ -841,7 +842,7 @@
         </div>
     </div>
     <div class="four column">
-        <a class="">
+        <a class="switch-next">
             Switch to next tab with same Details>>>>>>>>>
         </a>
     </div>

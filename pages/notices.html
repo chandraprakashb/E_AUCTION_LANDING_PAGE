@@ -1,11 +1,156 @@
 <script>
 
-    functionsInitializr(()=>{
+    functionsInitializr(()=>{     
       renderAuctionLotsTable()
     })
 
+    function DataModifier(PROVIDED_DATA){
+        var finalinzeModifiedData__first  = [];
+        var finalinzeModifiedData__second = [];
+        var finalinzeModifiedData__third  = [];
+        var modifiedData = [];
+
+        PROVIDED_DATA.forEach((comdata)=>{
+          if('offices' in comdata){
+              comdata.offices.forEach((officeData)=>{
+                  if('authorities' in officeData){
+                      officeData.authorities.forEach((authorityData)=>{
+                          if('notifications' in authorityData){
+                            authorityData.notifications.forEach((notificationData)=>{
+                              modifiedData.push({
+                                commodityName:comdata.commodityName,
+                                officeName:officeData.officeName,
+                                authorityName:authorityData.authorityName,
+                                instrcn:notificationData.instrcn,
+                                enteredBy:notificationData.enteredBy,
+                                entrdon:notificationData.entrdon,
+                                downloadLink:notificationData.downloadLink,
+                              })
+                            })
+                          }
+                      });
+                  }
+              })
+          }
+        })
+
+        var index = 0;
+        modifiedData.forEach((modifieddata)=>{
+          var filteredCommodity   = modifiedData.filter((data) => data.commodityName === modifieddata.commodityName);
+          var filteredOffices     = modifiedData.filter((data) => data.commodityName === modifieddata.commodityName && data.officeName === modifieddata.officeName);
+          var filteredAuthorities = modifiedData.filter((data) => data.commodityName === modifieddata.commodityName && data.officeName === modifieddata.officeName && data.authorityName === modifieddata.authorityName);
+          // console.log(modifieddata.commodityName);
+          var  config = [];
+          config.push(
+            { 
+                key:'commodityName' , 
+                rowSpan:filteredCommodity.length,
+                commodityName:modifieddata.commodityName
+            },
+            { 
+                key:'officeName'    , 
+                rowSpan:filteredOffices.length,
+                officeName:modifieddata.officeName
+            },
+            { 
+                key:'authorityName' , 
+                rowSpan:filteredAuthorities.length,
+                authorityName:modifieddata.authorityName
+            },
+
+                    
+          );
+
+          if(finalinzeModifiedData__first.find((data)=> data.commodityName === modifieddata.commodityName)){
+            let data ={...modifieddata};
+            data.commodityName  = ''; 
+            data.config = config;
+            finalinzeModifiedData__first.push(data)
+          }
+          else{
+            index++;
+            modifieddata.config = config;
+            modifieddata.index  = index;
+            finalinzeModifiedData__first.push(modifieddata);
+          }
+                
+        })
+
+        finalinzeModifiedData__first.forEach((modifieddata)=>{
+          if(finalinzeModifiedData__second.find((data)=> data.officeName === modifieddata.officeName && data.authorityName === modifieddata.authorityName)){
+              modifieddata.authorityName = '';
+              finalinzeModifiedData__second.push(modifieddata); 
+          }else{
+              finalinzeModifiedData__second.push(modifieddata); 
+          } 
+        })
+
+        finalinzeModifiedData__second.forEach((modifieddata)=>{
+          if(finalinzeModifiedData__third.find((data)=> data.officeName === modifieddata.officeName)){
+              modifieddata.officeName = '';
+              finalinzeModifiedData__third.push(modifieddata); 
+          }else{
+              finalinzeModifiedData__third.push(modifieddata); 
+          } 
+        });
+
+        return finalinzeModifiedData__third;
+    }
+
     function renderAuctionLotsTable(){
-        var table;   
+        var table;  
+
+        var comRowspan = function(param){
+            if('config' in param.data && param.data[param.colDef.field] !== ''){
+                return param.data.config[0].rowSpan;
+            }
+        }
+
+        var comRenderer = function(param){
+          var div         = document.createElement('div');
+
+          if('config' in param.data && param.data[param.colDef.field] !== ''){
+            div.classList.add('commodity');
+            div.textContent = param.data.commodityName;
+          }
+
+          return div;
+        }
+
+
+        var authorityRowspan = function(param){
+          if(param.data.authorityName !== ''){
+            return param.data.config[2].rowSpan;
+          }else{
+            return 0;
+          }
+        }
+
+        var depAndAuthRenderer = function(param){
+          var div         = document.createElement('div');
+          var data        = param.data.config;
+
+          div.classList.add('info-wrapper');
+        
+
+          
+          if(param.data.authorityName !== ''){
+            div.innerHTML= `
+            <div>
+              <div>
+                <span class="heading">&nbsp;&nbsp;&nbsp;&nbsp; Office:</span> ${data[1].officeName}
+              </div>
+              <div>
+                <span class="heading">Authority:</span> ${data[2].authorityName}
+              </div>  
+            </div>
+            `;
+          }
+
+
+
+          return div;
+        }
 
         var downloadRenderer = function(param){
             var span =  document.createElement('span');
@@ -15,1508 +160,270 @@
         }
 
         const columnDefs = [
-            {headerName:"Depot"             , field:"depot",    resizable:true,width:"150px"},
-            {headerName:"Notice Heading"    , field:"instrcn",    resizable:true,width:"370px"},
-            {headerName:"Entered By"        , field:"entrdby",    resizable:true},
-            {headerName:"Entered On"        , field:"entrdon",   resizable:true,width:"155px"},
-            {headerName:"Download"          , field:"savdFile", resizable:true,width:"80px",cellRenderer:downloadRenderer},
-        ];
+            {
+              headerName:"Commodity Name", 
+              field:"commodityName",    
+              resizable:true, 
+              width:160, 
+              cellRenderer:comRenderer,
+              rowSpan: comRowspan,
+              cellClassRules: {
+                'cell-span': " value !== '' ",
+              },
+            },
+            {
+              headerName:"Department & Authority"    , 
+              field:"dep_athority",     
+              resizable:true,
+              width:300,
+              cellRenderer:depAndAuthRenderer,
+              rowSpan: authorityRowspan,
+              cellClassRules: {
+                'cell-span': async (params) => {
+                  var value = false;
+                  await setTimeout(()=>{
+                    if(params.data.authorityName !== ''){
+                      value = true;
+                    }
+                  }, 0)
+                },
+              },
+            },
+            {headerName:"Notice Heading"            , field:"instrcn",          resizable:true,width:420},
+            {headerName:"Entered By"                , field:"enteredBy",        resizable:true},
+            {headerName:"Entered On"                , field:"entrdon",          resizable:true,width:155},
+            {headerName:"Download"                  , field:"savdFile",         resizable:true,width:80,cellRenderer:downloadRenderer},
+            // {headerName:"officeName"                , field:"officeName",    hide: true},
+            // {headerName:"authorityName"             , field:"authorityName", hide: true},
+        ];        
 
-        var rowData = [
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 163,
-    "instrcn": "Leaves and Twigs of Kail Poanta Road for sale",
-    "file": "1677177321813-NOTE20230222172412.png,",
-    "depotid": 3,
-    "depot": "Yamunanagar",
-    "type": "D",
-    "entrdby": "Deepak Alwadhi",
-    "entrdon": "23/02/2023 06:35:21 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 161,
-    "instrcn": "The auction scheduled to be held on 23.02.2023 is cancelled. This auction will be done on 26.02.2023",
-    "file": "1677087289393-,",
-    "depotid": 9,
-    "depot": "Rewari",
-    "type": "D",
-    "entrdby": "Sh. Bhupender Singh",
-    "entrdon": "22/02/2023 05:34:49 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 160,
-    "instrcn": "It is informed all of you that Shisham Round Timber of Lot No. 230, 235, 228, 224 of Hisar Byepass SD and Lot No 154 of Julana SD have been removed from e-Auction dated 21-02-2023 due to administrative reasons.",
-    "depotid": 6,
-    "depot": "Hisar",
-    "type": "I",
-    "entrdby": "Sh. Satish Kumar, HFS",
-    "entrdon": "20/02/2023 10:16:14 AM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 159,
-    "instrcn": "It is informed all of you that Shisham Round Timber of Lot No. 230, 235, 228, 224 of Hisar Byepass SD and Lot No 154 of Julana SD have been removed from e-Auction dated 21-02-2023 due to administrative reasons.",
-    "file": "1676888161654-e-Auction Notice (21-02-2023).jpg,",
-    "depotid": 6,
-    "depot": "Hisar",
-    "type": "D",
-    "entrdby": "Sh. Satish Kumar, HFS",
-    "entrdon": "20/02/2023 10:16:01 AM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 158,
-    "instrcn": "Regarding - e-Auction of condemn duel desk in shape of Firewood  in SD Hisar Byepass lot No. 1 & Jind SD Lot No. 181 on dated 21-02-2023",
-    "depotid": 6,
-    "depot": "Hisar",
-    "type": "I",
-    "entrdby": "Sh. Satish Kumar, HFS",
-    "entrdon": "20/02/2023 10:03:21 AM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 157,
-    "instrcn": "Regarding - e-Auction of condemn duel desk in shape of Firewood on dated 21-02-2023.",
-    "file": "1676636042056-Auction Dt. 21-02-2023.jpg,",
-    "depotid": 6,
-    "depot": "Hisar",
-    "type": "D",
-    "entrdby": "Sh. Satish Kumar, HFS",
-    "entrdon": "17/02/2023 12:14:02 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 156,
-    "instrcn": "It is informed all of you that Lot No. 120 and 121 Shisham Round Timber of Sale Depot Sector-2 Kurukshetra has been deleted due to administrative reasons.",
-    "depotid": 4,
-    "depot": "Kurukshetra",
-    "type": "I",
-    "entrdby": "Sh. Vishal Kaushik, HFS",
-    "entrdon": "14/02/2023 04:55:26 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 155,
-    "instrcn": "It is informed all of you that Lot No. 120 and 121 Shisham Round Timber of Sale Depot Sector-2 Kurukshetra has been deleted due to administrative reasons.",
-    "file": "1676393713012-,",
-    "depotid": 4,
-    "depot": "Kurukshetra",
-    "type": "D",
-    "entrdby": "Sh. Vishal Kaushik, HFS",
-    "entrdon": "14/02/2023 04:55:13 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 154,
-    "instrcn": "E-auction date 22-03-2022 Sale Depot Bhattu, Bigher and Tohana Stumps on Ground .",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "I",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "13/02/2023 03:33:50 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 153,
-    "instrcn": "E-auction date 22-03-2022 Sale Depot Bhattu, Bigher and Tohana Stumps on Ground .",
-    "file": "1676302411631-16-02-2023 Stumps letter_page-0001.jpg,",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "D",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "13/02/2023 03:33:31 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 152,
-    "instrcn": "It is informed all of you that Lot No. 246 Eucalyptus Sawn Fuelwood and Lot No. 247 Kikar Sawn Fuelwood of Sale Depot HFDC Saw Mill Pipli  has been deleted due to administrative reasons.",
-    "depotid": 4,
-    "depot": "Kurukshetra",
-    "type": "I",
-    "entrdby": "Sh. Vishal Kaushik, HFS",
-    "entrdon": "24/01/2023 07:38:47 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 151,
-    "instrcn": "It is informed all of you that Lot No. 246 Eucalyptus Sawn Fuelwood and Lot No. 247 Kikar Sawn Fuelwood of Sale Depot HFDC Saw Mill Pipli  has been deleted due to administrative reasons.",
-    "file": "1674589108527-,",
-    "depotid": 4,
-    "depot": "Kurukshetra",
-    "type": "D",
-    "entrdby": "Sh. Vishal Kaushik, HFS",
-    "entrdon": "24/01/2023 07:38:28 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 150,
-    "instrcn": "Please reveriefi lot no 523 phots",
-    "file": "1673961877182-,",
-    "depotid": 9,
-    "depot": "Rewari",
-    "type": "D",
-    "entrdby": "Sh. Bhupender Singh",
-    "entrdon": "17/01/2023 01:24:37 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 149,
-    "instrcn": "E-auction date 10-01-2023 Sale Depot Abubshahar,  Sirsa Huda and Kalanwali Stumps on Ground .",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "I",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "09/01/2023 10:58:51 AM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 148,
-    "instrcn": "E-auction date 10-01-2023 Sale Depot Abubshahar,  Sirsa Huda and Kalanwali Stumps on Ground .",
-    "file": "1673261923042-stumps letter 10-01-2023.jpg,",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "D",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "09/01/2023 10:58:43 AM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 144,
-    "instrcn": "E-auction date 12-12-2022 Sale Depot Abubshahar and Sirsa Huda Stumps on Ground .",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "I",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "09/12/2022 03:51:38 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 143,
-    "instrcn": "E-auction date 12-12-2022 Sale Depot Abubshahar and Sirsa Huda Stumps on Ground .",
-    "file": "1670601084927-Stumps letter.jpg,",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "D",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "09/12/2022 03:51:24 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 133,
-    "instrcn": "Lot No. 50105 of Sale Depot Dadupur Head of Shsham R/T A/S has been deleted from Auction list dated 25/11/2022 due to requirement of Furniture making Unit/ Saw Mill Jagadhari",
-    "depotid": 3,
-    "depot": "Yamunanagar",
-    "type": "I",
-    "entrdby": "Deepak Alwadhi",
-    "entrdon": "22/11/2022 02:19:07 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 132,
-    "instrcn": "Notice - Regarding e-Auction dt. 22-11-2022",
-    "file": "1668794803401-Auction - Corrigendum.jpg,",
-    "depotid": 6,
-    "depot": "Hisar",
-    "type": "D",
-    "entrdby": "Sh. Satish Kumar, HFS",
-    "entrdon": "18/11/2022 06:06:43 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 127,
-    "instrcn": "new 23 lots no deleted in Saha 1 depot up coming eauction date 14/11/22",
-    "file": "1668272646552-,",
-    "depotid": 2,
-    "depot": "Ambala",
-    "type": "D",
-    "entrdby": "Sh. Virendra Singh Gil, HFS",
-    "entrdon": "12/11/2022 05:04:06 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 126,
-    "instrcn": "Saw Mill Mangalpur Ply board & sunmica scrap piece sale in sft",
-    "file": "1665414376149-Scan_20221010_150343.jpg,",
-    "depotid": 5,
-    "depot": "Karnal",
-    "type": "D",
-    "entrdby": "Sh. Satbir Singh, HFS",
-    "entrdon": "10/10/2022 03:06:16 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 125,
-    "instrcn": "The kikar lots available in furniture Unit depot will be sold on as is where is basis. Quantity and quality may differ as shown in photographs.\tRewari Auction dated 24.09.2022",
-    "file": "1664016992573-,",
-    "depotid": 7,
-    "depot": "Rohtak",
-    "type": "D",
-    "entrdby": "SH. MANOJ KUMAR,HFS",
-    "entrdon": "24/09/2022 10:56:32 AM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 119,
-    "instrcn": "E-auction date 13-09-2022 Sale Depot Tohana, Bigher and Bhattu Stumps on Ground .",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "I",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "12/09/2022 04:26:09 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 118,
-    "instrcn": "E-auction date 13-09-2022 Sale Depot Tohana, Bigher and Bhattu Stumps on Ground .",
-    "file": "1662999947013-13-09-2022_1.jpg,",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "D",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "12/09/2022 04:25:47 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 117,
-    "instrcn": "E-Auction on dated 22.08.2022 of Lot No. 198 of Khokra depot 260 Uprooted Stumps at Pinjore Nalagarh Road from KM 11 to 18 R/Side",
-    "file": "1661167930500-,",
-    "depotid": 2,
-    "depot": "Ambala",
-    "type": "D",
-    "entrdby": "Sh. Virendra Singh Gil, HFS",
-    "entrdon": "22/08/2022 11:32:10 AM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 116,
-    "instrcn": "E-Auction on dated 22.08.2022 of Lot No. 197 of Khokra depot 240 Uprooted Stumps at Pinjore Nalagarh Road from KM 4 to 11 R/Side",
-    "file": "1661167896383-,",
-    "depotid": 2,
-    "depot": "Ambala",
-    "type": "D",
-    "entrdby": "Sh. Virendra Singh Gil, HFS",
-    "entrdon": "22/08/2022 11:31:36 AM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 115,
-    "instrcn": "Nada sale depot Chir lots have been deleted[106,105,108,99,100,101,103,102,107,104] Due to administrative reason",
-    "file": "1658677100220-,",
-    "depotid": 2,
-    "depot": "Ambala",
-    "type": "D",
-    "entrdby": "Sh. Virendra Singh Gil, HFS",
-    "entrdon": "24/07/2022 03:38:20 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 112,
-    "instrcn": "E-auction on dated 11/07/2022 of Lot number 565 of Shahzadpur depot has 500 stumps on ground of Naraingarh to Raipur Rani road kilometre 6.3 to 13 right side of road",
-    "depotid": 2,
-    "depot": "Ambala",
-    "type": "I",
-    "entrdby": "Sh. Virendra Singh Gil, HFS",
-    "entrdon": "10/07/2022 12:00:56 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 111,
-    "instrcn": "E-auction on dated 11/07/2022 of Lot number 564 of Shahzadpur depot has 300 stumps on ground of Naraingarh to Raipur rani road kilometre 6.3 to 13 left side of road",
-    "depotid": 2,
-    "depot": "Ambala",
-    "type": "I",
-    "entrdby": "Sh. Virendra Singh Gil, HFS",
-    "entrdon": "10/07/2022 11:58:26 AM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 110,
-    "instrcn": "E-auction on dated 11/07/2022 of lot number 99 of khokhra depot has 450 uprooted stumps on pinjore-nalagarh road from kilometre 8 to 14 left side of the road.",
-    "depotid": 2,
-    "depot": "Ambala",
-    "type": "I",
-    "entrdby": "Sh. Virendra Singh Gil, HFS",
-    "entrdon": "10/07/2022 11:53:37 AM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 108,
-    "instrcn": "E-auction date 09-07-2022 Sale Depot Abubshahar and Sirsa Huda Stumps on Ground .",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "I",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "08/07/2022 02:12:06 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 107,
-    "instrcn": "E-auction date 09-07-2022 Sale Depot Abubshahar and Sirsa Huda Stumps on Ground .",
-    "file": "1657289513302-Stumps 09-07-2022......jpg,",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "D",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "08/07/2022 02:11:53 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 106,
-    "instrcn": "E-auction date 21-06-2022 Lot No 786 Sale Depot Abubshaher Stumps on Ground .",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "I",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "20/06/2022 01:05:22 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 105,
-    "instrcn": "E-auction date 21-06-2022 Lot No 786 Sale Depot Abubshaher Stumps on Ground .",
-    "file": "1655730309443-Stumps Letter.jpg,",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "D",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "20/06/2022 01:05:09 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 104,
-    "instrcn": "E-auction date 11-06-2022 Sale Depot Jamalpur Stumps on Ground .",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "I",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "10/06/2022 05:13:47 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 103,
-    "instrcn": "E-auction date 11-06-2022 Sale Depot Jamalpur Stumps on Ground .",
-    "file": "1654881213719-stumps 11-06-2022.jpg,",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "D",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "10/06/2022 05:13:33 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 102,
-    "instrcn": "Delete Lot",
-    "file": "1653556900313-img20220526_09203890.pdf,",
-    "depotid": 5,
-    "depot": "Karnal",
-    "type": "D",
-    "entrdby": "Sh. Satbir Singh, HFS",
-    "entrdon": "26/05/2022 09:21:40 AM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 101,
-    "instrcn": "E-auction date 12-05-2022 Sale Depot  Bhuna, Tohana,  Jamalpur, Bigher and Bhattu Stumps on Ground .",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "I",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "11/05/2022 03:08:05 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 100,
-    "instrcn": "E-auction date 12-05-2022 Sale Depot  Bhuna, Tohana,  Jamalpur, Bigher and Bhattu Stumps on Ground .",
-    "file": "1652281672435-Stumps 12-05-2022_1.jpg,",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "D",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "11/05/2022 03:07:52 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 99,
-    "instrcn": "E-auction date 12-05-2022 Sale Depot  Bhuna, Tohana,  Jamalpur, Bigher and Bhattu Stumps on Ground .",
-    "file": "1652281666793-Stumps 12-05-2022_1.jpg,",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "D",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "11/05/2022 03:07:46 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 95,
-    "instrcn": "E-auction date 26-04-2022 Sale Depot Sukhera Khera Stumps on Ground .",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "I",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "25/04/2022 01:47:16 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 94,
-    "instrcn": "E-auction date 26-04-2022 Sale Depot Sukhera Khera Stumps on Ground .",
-    "file": "1650894419697-26-04-2022 stumps.jpg,",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "D",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "25/04/2022 01:46:59 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 90,
-    "instrcn": "E-auction date 20-04-2022 Sale Depot Tohana, Jamalpur,  Bigher and Bhattu Stumps on Ground .",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "I",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "19/04/2022 10:56:48 AM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 89,
-    "instrcn": "E-auction date 20-04-2022 Sale Depot Tohana, Jamalpur,  Bigher and Bhattu Stumps on Ground .",
-    "file": "1650365787309-Stumps Notice 20-04-2022.jpg,",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "D",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "19/04/2022 10:56:27 AM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 88,
-    "instrcn": "E-auction date 29-03-2022 Sale Depot Jamalpur and Bhattu Stumps on Ground .",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "I",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "28/03/2022 12:03:50 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 87,
-    "instrcn": "E-auction date 29-03-2022 Sale Depot Jamalpur and Bhattu Stumps on Ground .",
-    "file": "1648469014568-stumps 29-03-2022 (1).jpg,",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "D",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "28/03/2022 12:03:34 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 86,
-    "instrcn": "E-auction date 22-03-2022 Sale Depot Bhuna, Tohana and Sukherakhera Stumps on Ground .",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "I",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "21/03/2022 03:42:41 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 85,
-    "instrcn": "E-auction date 22-03-2022 Sale Depot Bhuna, Tohana and Sukherakhera Stumps on Ground .",
-    "file": "1647877347656-22-03-2022.jpg,",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "D",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "21/03/2022 03:42:27 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 84,
-    "instrcn": "In the e-auction dated 28.03.2022,the 700 number stumps of tikartall to kajampur road on ground will also be auctioned along with timber.",
-    "depotid": 2,
-    "depot": "Ambala",
-    "type": "I",
-    "entrdby": "Sh. Virendra Singh Gil, HFS",
-    "entrdon": "15/03/2022 09:12:31 AM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 81,
-    "instrcn": "E Auction Date 12-03-2022 Sale Depot Sukherakhera On ground Stumps Site ",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "I",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "11/03/2022 01:37:04 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 78,
-    "instrcn": "E Auction Date 12-03-2022 Sale Depot Sukherakhera On ground Stumps Site ",
-    "file": "1647005775378-12-3-2020 Stumps Letter.jpeg,",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "D",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "11/03/2022 01:36:15 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 77,
-    "instrcn": "E Auction Date 10-03-2022 Sale Depot Tohana & Bigher On ground Stumps Site ",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "I",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "09/03/2022 03:05:57 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 76,
-    "instrcn": "E Auction Date 10-03-2022 Sale Depot Tohana & Bigher On ground Stumps Site ",
-    "file": "1646838339658-Stumps Letter.jpeg,",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "D",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "09/03/2022 03:05:39 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 75,
-    "instrcn": "Lot number 39 teak fuelwood of H.M.T depot and lot number 62 and 63 ,Euc sawn timber of Chandimandir depot have been deleted due to their double entry.",
-    "file": "1646644538338-,",
-    "depotid": 2,
-    "depot": "Ambala",
-    "type": "D",
-    "entrdby": "Sh. Virendra Singh Gil, HFS",
-    "entrdon": "07/03/2022 09:15:38 AM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 71,
-    "instrcn": "E-auction date 19-02-2022 Sale Depot Sinthala and Jamalpur Stumps on Ground .",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "I",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "15/02/2022 01:31:58 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 70,
-    "instrcn": "E-auction date 19-02-2022 Sale Depot Sinthala and Jamalpur Stumps on Ground .",
-    "file": "1644931903133-27397096489746909883c537af4e1fe3-0001.jpg,",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "D",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "15/02/2022 01:31:43 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 69,
-    "instrcn": "E-auction date 12-02-2022 Sale Depot Abubshahar and Assir Stumps on Ground .",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "I",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "11/02/2022 12:26:42 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 68,
-    "instrcn": "E-auction date 12-02-2022 Sale Depot Abubshahar and Assir Stumps on Ground .",
-    "file": "1644582385319-Stumps Notice 12-02-2022.jpg,",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "D",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "11/02/2022 12:26:25 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 67,
-    "instrcn": "E-auction date 10-02-2022 Sale Depot Tohana,  Bigher and Bhattu Stumps on Ground .",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "I",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "09/02/2022 02:57:32 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 66,
-    "instrcn": "E-auction date 10-02-2022 Sale Depot Tohana,  Bigher and Bhattu Stumps on Ground .",
-    "file": "1644418635298-10.02.2022(1) (1).jpg,",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "D",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "09/02/2022 02:57:15 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 65,
-    "instrcn": "E-auction date 29-01-2022 Sale Depot Tohana,  Bigher and Bhattu Stumps on Ground .",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "I",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "27/01/2022 10:48:23 AM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 64,
-    "instrcn": "E-auction date 29-01-2022 Sale Depot Tohana,  Bigher and Bhattu Stumps on Ground .",
-    "file": "1643280490938-CamScanner 01-27-2022 10.43.24.jpg,",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "D",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "27/01/2022 10:48:10 AM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 63,
-    "instrcn": "Auction Dated 27.01.2022 Mohendergarh depot  Lot No. 01, 02 and 60 Delete kar diya h ",
-    "depotid": 9,
-    "depot": "Rewari",
-    "type": "I",
-    "entrdby": "Sh. Ashok Kumar, HFS",
-    "entrdon": "25/01/2022 02:18:02 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 62,
-    "instrcn": "Site of Stumps in Safidon SD (Lot No. 267)",
-    "file": "1642783540882-Name of Site of Stumps e-Notice dt. 25-01-22.jpg,",
-    "depotid": 6,
-    "depot": "Hisar",
-    "type": "D",
-    "entrdby": "Sh. Satish Kumar, HFS",
-    "entrdon": "21/01/2022 04:45:40 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 60,
-    "instrcn": "Corrigendum of e-Auction dated 24-01-22 of Mirpur SD",
-    "file": "1642783412932-Corrigendum e-Notice dt. 24-01-22.jpg,",
-    "depotid": 6,
-    "depot": "Hisar",
-    "type": "D",
-    "entrdby": "Sh. Satish Kumar, HFS",
-    "entrdon": "21/01/2022 04:43:32 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 59,
-    "instrcn": "TCS Collect Letter M/o 01/2022 ( Sale Price + GST) ",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "I",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "15/01/2022 12:57:47 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 58,
-    "instrcn": "TCS Collect Letter M/o 01/2022 ( Sale Price + GST) ",
-    "file": "1642251457926-TCS Letter.jpeg,",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "D",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "15/01/2022 12:57:37 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 57,
-    "instrcn": "Sitwise Stumps Detail",
-    "file": "1642246123892-Sitewiswe Stumps detail (HSR).jpg,",
-    "depotid": 6,
-    "depot": "Hisar",
-    "type": "D",
-    "entrdby": "Sh. Satish Kumar, HFS",
-    "entrdon": "15/01/2022 11:28:43 AM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 56,
-    "instrcn": "E-auction date 15-01-2022 Sale Depot Bhuna Lot No. 20 Stumps on Ground .",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "I",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "14/01/2022 02:19:43 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 55,
-    "instrcn": "E-auction date 15-01-2022 Sale Depot Bhuna Lot No. 20 Stumps on Ground .",
-    "file": "1642169965115-Sale Depot Bhuna Stumps.jpg,",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "D",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "14/01/2022 02:19:25 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 54,
-    "instrcn": "E-auction date 25-12-2021 Sale Depot Bigher Lot No. 104, 105 & 106  and Sale Depot Tohana  Lot No. 324 & 325 Stumps on Ground .",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "I",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "22/12/2021 02:41:55 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 53,
-    "instrcn": "E-auction date 25-12-2021 Sale Depot Bigher Lot No. 104, 105 & 106  and Sale Depot Tohana  Lot No. 324 & 325 Stumps on Ground .",
-    "file": "1640184089921-E auction Notice.jpg,",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "D",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "22/12/2021 02:41:29 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 52,
-    "instrcn": "Due to administrative reasons, the lot number 2 of ugala depot, which is of kikar species has been deleted. ",
-    "depotid": 2,
-    "depot": "Ambala",
-    "type": "I",
-    "entrdby": "Sh. Virendra Singh Gil, HFS",
-    "entrdon": "20/12/2021 11:39:56 AM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 51,
-    "instrcn": "Auction for Mix material of manaktabra and shahpur sale depot is also on 17/12/2021",
-    "depotid": 2,
-    "depot": "Ambala",
-    "type": "I",
-    "entrdby": "Sh. Virendra Singh Gil, HFS",
-    "entrdon": "16/12/2021 08:25:45 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 50,
-    "instrcn": "All Contractors, please participate in e-Auction as per notice.",
-    "depotid": 6,
-    "depot": "Hisar",
-    "type": "I",
-    "entrdby": "Sh. Satish Kumar, HFS",
-    "entrdon": "16/12/2021 04:09:59 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 49,
-    "instrcn": "e-Auction of HQ Material ",
-    "file": "1639670868302-e-Auction of HQ Material.jpg,",
-    "depotid": 6,
-    "depot": "Hisar",
-    "type": "D",
-    "entrdby": "Sh. Satish Kumar, HFS",
-    "entrdon": "16/12/2021 04:07:48 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 48,
-    "instrcn": "Dear Bidders, We inform you that for all the e-auctions for the month of Dec-2021 & it's onwards, their payment process will be done through online mode. All options of payments like NetBanking, Debit Card, Credit Card and RTGS/NEFT are available on the portal. For more information please visit the portal or contact to our Helpdesk. Thank you.....",
-    "depotid": 0,
-    "depot": "-",
-    "type": "I",
-    "entrdby": "Sparsh Technologies",
-    "entrdon": "08/12/2021 07:04:03 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 46,
-    "instrcn": "Remove Lot No. form e-Auction",
-    "file": "1637672449678-Auction Notice (24-11-2021).jpg,",
-    "depotid": 6,
-    "depot": "Hisar",
-    "type": "D",
-    "entrdby": "Sh. Satish Kumar, HFS",
-    "entrdon": "23/11/2021 01:00:49 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 45,
-    "instrcn": "Lot No.38,40,43 of Saw Mill Pipli is Deleted From Auction due to technical issue",
-    "depotid": 0,
-    "depot": "All",
-    "type": "I",
-    "entrdby": "Sh. Vishal Kaushik, HFS",
-    "entrdon": "22/11/2021 06:37:05 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 44,
-    "instrcn": "Lot number 13 of Thadugarh Depot is to be considered as Bahi-1 instead of Bahi-2 and Lot number 14 is to be considered as Bahi-2 instead of Damdma",
-    "depotid": 2,
-    "depot": "Ambala",
-    "type": "I",
-    "entrdby": "Sh. Virendra Singh Gil, HFS",
-    "entrdon": "21/11/2021 05:38:57 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 42,
-    "instrcn": "lot number 13 of thadugarh depot is to be considered as Bahi-1 instead 0f Bahi-2 and Lot number 14 is to be considered as bahi-2 instead of Damdma",
-    "file": "1637488164120-,",
-    "depotid": 2,
-    "depot": "Ambala",
-    "type": "D",
-    "entrdby": "Sh. Virendra Singh Gil, HFS",
-    "entrdon": "21/11/2021 09:49:24 AM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 41,
-    "instrcn": "e-Auction Notice dt. 24-11-2021",
-    "file": "1637160946735-e-Auction (24-11-2021).pdf,",
-    "depotid": 6,
-    "depot": "Hisar",
-    "type": "D",
-    "entrdby": "Sh. Satish Kumar, HFS",
-    "entrdon": "17/11/2021 02:55:46 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 40,
-    "instrcn": "e-Auction Notice dt. 20-11-2021",
-    "file": "1637160871005-e-Auction (20-11-2021).pdf,",
-    "depotid": 6,
-    "depot": "Hisar",
-    "type": "D",
-    "entrdby": "Sh. Satish Kumar, HFS",
-    "entrdon": "17/11/2021 02:54:31 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 39,
-    "instrcn": "E Auction Date 19-11-2021 Sale Depot Tohana Lot No 244 No of Stumps 14 On ground Stumps Site Water Works Partha (11 Stumps) & Bosti (03 Stumps) ",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "I",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "17/11/2021 01:09:29 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 38,
-    "instrcn": "E Auction Date 19-11-2021 Sale Depot Tohana Lot No 244 No of Stumps 14 On ground Stumps Site Water Works Partha (11 Stumps) & Bosti (03 Stumps) ",
-    "file": "1637154554331-On ground stumps.jpeg,",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "D",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "17/11/2021 01:09:14 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 37,
-    "instrcn": "e-Auction Notice",
-    "file": "1636372912615-E-auction Notice.jpg,",
-    "depotid": 6,
-    "depot": "Hisar",
-    "type": "D",
-    "entrdby": "Sh. Satish Kumar, HFS",
-    "entrdon": "08/11/2021 12:01:52 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 36,
-    "instrcn": "Bamboo Length is 7 feet &  Volume is Number of  Bundles Auction  on Dated 30.10.2021 ",
-    "depotid": 2,
-    "depot": "Ambala",
-    "type": "I",
-    "entrdby": "Sh. Virendra Singh Gil, HFS",
-    "entrdon": "30/10/2021 07:43:06 AM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 34,
-    "instrcn": "Sale Depot Forest Complex Jagadhri and Saw Mill Jagadhri Auction of 14/10/2021 is  rescheduled for Today (19/10/2021) 4:00 pm onwards",
-    "depotid": 3,
-    "depot": "Yamunanagar",
-    "type": "I",
-    "entrdby": "Deepak Alwadhi",
-    "entrdon": "19/10/2021 09:39:31 AM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 33,
-    "instrcn": "Regarding Yamunagar Auction. Auction date 14/10/2021.",
-    "file": "1634201844243-IMG-20211013-WA0004.jpg,",
-    "depotid": 0,
-    "depot": "-",
-    "type": "D",
-    "entrdby": "Sparsh Technologies",
-    "entrdon": "14/10/2021 08:57:24 AM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 32,
-    "instrcn": "E auction of Yamuna Nagar 14/10/2021",
-    "file": "1634156180612-1634134531390.jpg,",
-    "depotid": 3,
-    "depot": "Yamunanagar",
-    "type": "D",
-    "entrdby": "Deepak Alwadhi",
-    "entrdon": "13/10/2021 08:16:20 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 31,
-    "instrcn": "E auction of Yamuna Nagar dated 14/10/2021 is cancelled due some administrative reasons.Inconvenience caused is regretted.",
-    "depotid": 3,
-    "depot": "Yamunanagar",
-    "type": "I",
-    "entrdby": "Deepak Alwadhi",
-    "entrdon": "13/10/2021 08:08:14 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 28,
-    "instrcn": "HFDC e-Auction portal online EMD deposit video available for Sparsh Technologies Official YouTube Channel. Link: https://youtu.be/qvyBkeGOSAY.  ",
-    "file": "1633444417250-,",
-    "depotid": 0,
-    "depot": "-",
-    "type": "D",
-    "entrdby": "Sparsh Technologies",
-    "entrdon": "05/10/2021 02:33:37 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 27,
-    "instrcn": "Lot No. 166 of Sale depot Teora has been cancelled",
-    "depotid": 0,
-    "depot": "All",
-    "type": "I",
-    "entrdby": "Sh. Vishal Kaushik, HFS",
-    "entrdon": "23/09/2021 11:24:40 AM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 22,
-    "instrcn": "From E auction 15.09.2021 Lot No 13077 of Bigher Depot Deleted due to unavoidable circumstances.",
-    "depotid": 8,
-    "depot": "Sirsa",
-    "type": "I",
-    "entrdby": "Sh. Raghubir Singh, HFS",
-    "entrdon": "12/09/2021 12:28:48 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 16,
-    "instrcn": "Corrigendum for e-auction on 27.08.2021. Reschedule for SD Teora and Helwa please download notice",
-    "depotid": 0,
-    "depot": "All",
-    "type": "I",
-    "entrdby": "Sh. Vishal Kaushik, HFS",
-    "entrdon": "26/08/2021 08:23:15 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 10,
-    "instrcn": "Please download the detail of sitewise stumps ",
-    "depotid": 6,
-    "depot": "Hisar",
-    "type": "I",
-    "entrdby": "Sh. Satish Kumar, HFS",
-    "entrdon": "24/08/2021 04:12:36 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 9,
-    "instrcn": "Name of Site of Stumps",
-    "file": "1629821455982-IMG_0001.jpg,",
-    "depotid": 6,
-    "depot": "Hisar",
-    "type": "D",
-    "entrdby": "Sh. Satish Kumar, HFS",
-    "entrdon": "24/08/2021 04:10:56 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 8,
-    "instrcn": "Dear bidder please find attached file for  August 25 e-Auction. ",
-    "file": "1629733645463-2-MERGE LOT FOR KKR 25AUG21..xls,",
-    "depotid": 0,
-    "depot": "All",
-    "type": "D",
-    "entrdby": "Sh. Vishal Kaushik, HFS",
-    "entrdon": "23/08/2021 03:47:25 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 7,
-    "instrcn": "E-auction Karnal  Delete Lots",
-    "file": "1629712303147-Scan_20210823_093721.pdf,",
-    "depotid": 5,
-    "depot": "Karnal",
-    "type": "D",
-    "entrdby": "Sh. Satbir Singh, HFS",
-    "entrdon": "23/08/2021 09:51:43 AM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 5,
-    "instrcn": "Please download the notice",
-    "depotid": 6,
-    "depot": "Hisar",
-    "type": "I",
-    "entrdby": "Sh. Surender Singh",
-    "entrdon": "20/08/2021 01:03:59 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 4,
-    "instrcn": "Sitewise Stumps Detail ",
-    "file": "1629464602046-Sitewise Stumps detail.jpg,",
-    "depotid": 6,
-    "depot": "Hisar",
-    "type": "D",
-    "entrdby": "Sh. Surender Singh",
-    "entrdon": "20/08/2021 01:03:22 PM"
-  },
-  {
-    "hidMatId": 0,
-    "hidEaucId": 0,
-    "hidLotno": 0,
-    "id1": 0,
-    "id2": 0,
-    "instrctnid": 2,
-    "instrcn": "Corrections  of lots number 631, 632,633,634 in rewari hfdc rewari division ",
-    "file": "1627649572123-creation of lot rewari.pdf,",
-    "depotid": 0,
-    "depot": "All",
-    "type": "D",
-    "entrdby": "Sh. Kuldip Singh",
-    "entrdon": "30/07/2021 12:52:52 PM"
-  }
-]
+        var data = [
+        {
+            commodityName:"Timber",
+            offices:[
+                {
+                    officeName:"Gondia",
+                    authorities:[
+                        {
+                            authorityName: "authority 1",
+                            notifications:[
+                                {
+                                    instrcn:"Leaves and Twigs of Kail Poanta Road for sale",
+                                    enteredBy:"Sh. Satish Kumar, HFS",
+                                    entrdon: "20/02/2023 10:16:14 AM",
+                                    downloadLink:""
+                                },
+                                {
+                                    instrcn:"Leaves and Twigs of Kail Poanta Road for sale",
+                                    enteredBy:"Sh. Satish Kumar, HFS",
+                                    entrdon: "20/02/2023 10:16:14 AM",
+                                    downloadLink:""
+                                },
+                                {
+                                    instrcn:"Leaves and Twigs of Kail Poanta Road for sale",
+                                    enteredBy:"Sh. Satish Kumar, HFS",
+                                    entrdon: "20/02/2023 10:16:14 AM",
+                                    downloadLink:""
+                                }
+                            ]
+                        },
+                        {
+                            authorityName: "authority 2",
+                            notifications:[
+                                {
+                                    instrcn:"Leaves and Twigs of Kail Poanta Road for sale",
+                                    enteredBy:"Sh. Satish Kumar, HFS",
+                                    entrdon: "20/02/2023 10:16:14 AM",
+                                    downloadLink:""
+                                },
+                                {
+                                    instrcn:"Leaves and Twigs of Kail Poanta Road for sale",
+                                    enteredBy:"Sh. Satish Kumar, HFS",
+                                    entrdon: "20/02/2023 10:16:14 AM",
+                                    downloadLink:""
+                                },
+                                {
+                                    instrcn:"Leaves and Twigs of Kail Poanta Road for sale",
+                                    enteredBy:"Sh. Satish Kumar, HFS",
+                                    entrdon: "20/02/2023 10:16:14 AM",
+                                    downloadLink:""
+                                }
+                            ]
+                        }
 
-        var gridOptions = {columnDefs,rowData, pagination: true,};
+                    ]
+                },
+                {
+                    officeName:"Bhandaara",
+                    authorities:[
+                        {
+                            authorityName: "authority 1",
+                            notifications:[
+                                {
+                                    instrcn:"Leaves and Twigs of Kail Poanta Road for sale",
+                                    enteredBy:"Sh. Satish Kumar, HFS",
+                                    entrdon: "20/02/2023 10:16:14 AM",
+                                    downloadLink:""
+                                },
+                                {
+                                    instrcn:"Leaves and Twigs of Kail Poanta Road for sale",
+                                    enteredBy:"Sh. Satish Kumar, HFS",
+                                    entrdon: "20/02/2023 10:16:14 AM",
+                                    downloadLink:""
+                                },
+                                {
+                                    instrcn:"Leaves and Twigs of Kail Poanta Road for sale",
+                                    enteredBy:"Sh. Satish Kumar, HFS",
+                                    entrdon: "20/02/2023 10:16:14 AM",
+                                    downloadLink:""
+                                }
+                            ]
+                        },
+                        {
+                            authorityName: "authority 2",
+                            notifications:[
+                                {
+                                    instrcn:"Leaves and Twigs of Kail Poanta Road for sale",
+                                    enteredBy:"Sh. Satish Kumar, HFS",
+                                    entrdon: "20/02/2023 10:16:14 AM",
+                                    downloadLink:""
+                                },
+                                {
+                                    instrcn:"Leaves and Twigs of Kail Poanta Road for sale",
+                                    enteredBy:"Sh. Satish Kumar, HFS",
+                                    entrdon: "20/02/2023 10:16:14 AM",
+                                    downloadLink:""
+                                },
+                                {
+                                    instrcn:"Leaves and Twigs of Kail Poanta Road for sale",
+                                    enteredBy:"Sh. Satish Kumar, HFS",
+                                    entrdon: "20/02/2023 10:16:14 AM",
+                                    downloadLink:""
+                                }
+                            ]
+                        }
 
-        table = new agGrid.Grid(document.querySelector("#notice"),gridOptions);
-        
+                    ]
+                }
+            ]
+        },
+        {
+            commodityName:"Tendu",
+            offices:[
+                {
+                    officeName:"Nagpur",
+                    authorities:[
+                        {
+                            authorityName: "authority 1",
+                            notifications:[
+                                {
+                                    instrcn:"Leaves and Twigs of Kail Poanta Road for sale",
+                                    enteredBy:"Sh. Satish Kumar, HFS",
+                                    entrdon: "20/02/2023 10:16:14 AM",
+                                    downloadLink:""
+                                },
+                                {
+                                    instrcn:"Leaves and Twigs of Kail Poanta Road for sale",
+                                    enteredBy:"Sh. Satish Kumar, HFS",
+                                    entrdon: "20/02/2023 10:16:14 AM",
+                                    downloadLink:""
+                                },
+                                {
+                                    instrcn:"Leaves and Twigs of Kail Poanta Road for sale",
+                                    enteredBy:"Sh. Satish Kumar, HFS",
+                                    entrdon: "20/02/2023 10:16:14 AM",
+                                    downloadLink:""
+                                }
+                            ]
+                        },
+                        {
+                            authorityName: "authority 2",
+                            notifications:[
+                                {
+                                    instrcn:"Leaves and Twigs of Kail Poanta Road for sale",
+                                    enteredBy:"Sh. Satish Kumar, HFS",
+                                    entrdon: "20/02/2023 10:16:14 AM",
+                                    downloadLink:""
+                                },
+                                {
+                                    instrcn:"Leaves and Twigs of Kail Poanta Road for sale",
+                                    enteredBy:"Sh. Satish Kumar, HFS",
+                                    entrdon: "20/02/2023 10:16:14 AM",
+                                    downloadLink:""
+                                },
+                                {
+                                    instrcn:"Leaves and Twigs of Kail Poanta Road for sale",
+                                    enteredBy:"Sh. Satish Kumar, HFS",
+                                    entrdon: "20/02/2023 10:16:14 AM",
+                                    downloadLink:""
+                                }
+                            ]
+                        }
+
+                    ]
+                },
+                {
+                    officeName:"Pune",
+                    authorities:[
+                        {
+                            authorityName: "authority 1",
+                            notifications:[
+                                {
+                                    instrcn:"Leaves and Twigs of Kail Poanta Road for sale",
+                                    enteredBy:"Sh. Satish Kumar, HFS",
+                                    entrdon: "20/02/2023 10:16:14 AM",
+                                    downloadLink:""
+                                },
+                                {
+                                    instrcn:"Leaves and Twigs of Kail Poanta Road for sale",
+                                    enteredBy:"Sh. Satish Kumar, HFS",
+                                    entrdon: "20/02/2023 10:16:14 AM",
+                                    downloadLink:""
+                                },
+                                {
+                                    instrcn:"Leaves and Twigs of Kail Poanta Road for sale",
+                                    enteredBy:"Sh. Satish Kumar, HFS",
+                                    entrdon: "20/02/2023 10:16:14 AM",
+                                    downloadLink:""
+                                }
+                            ]
+                        },
+                        {
+                            authorityName: "authority 2",
+                            notifications:[
+                                {
+                                    instrcn:"Leaves and Twigs of Kail Poanta Road for sale",
+                                    enteredBy:"Sh. Satish Kumar, HFS",
+                                    entrdon: "20/02/2023 10:16:14 AM",
+                                    downloadLink:""
+                                },
+                                {
+                                    instrcn:"Leaves and Twigs of Kail Poanta Road for sale",
+                                    enteredBy:"Sh. Satish Kumar, HFS",
+                                    entrdon: "20/02/2023 10:16:14 AM",
+                                    downloadLink:""
+                                },
+                                {
+                                    instrcn:"Leaves and Twigs of Kail Poanta Road for sale",
+                                    enteredBy:"Sh. Satish Kumar, HFS",
+                                    entrdon: "20/02/2023 10:16:14 AM",
+                                    downloadLink:""
+                                }
+                            ]
+                        }
+
+                    ]
+                }
+            ]
+        }
+    ]
+
+        var rowData =  DataModifier(data);
+
+        var gridOptions = {columnDefs,rowData, pagination: true, suppressRowTransform: true};
+
+        table = new agGrid.Grid(document.querySelector("#notice"),gridOptions);   
     }
-
-
-
 </script>
 
 
@@ -1529,6 +436,41 @@
 .table-wrapper{
     box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.1);
 }
+
+.cell-span{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(255, 255, 255);
+  border: 1px solid #ece7e7;
+  /* z-index: 500; */
+}
+
+.commodity{
+  background-color: #3b5166;
+  border-radius: 5px;
+  font-size: 14px;
+  padding: 0px 5px;
+  color: #ece7e7;
+  font-weight: bold;
+  box-shadow: 0px 0px 8px 4px rgba(0,0,0,0.1);
+  width: 90%;
+  text-align: center;
+ 
+}
+
+
+.info-wrapper{
+  box-shadow: 0px 0px 4px 4px rgba(0,0,0,0.1);
+  width: 100%;
+  border-radius: 10px;
+  padding-left: 4px;
+  cursor: pointer;
+}
+.info-wrapper .heading{
+  font-size: 12px;
+  font-weight: 700;
+}
 </style>
 
 <!-- pagetitle start here -->
@@ -1537,11 +479,11 @@
     	<div class="twelve column">
         	<h1>Notices</h1>
             <h3>See the notices by Depots</h3>
-        </div>
+      </div>
     </div>	        
 </section>
 <!-- pagetitle end here -->
 
 <section class="lots-table">
-    <div id="notice" class="ag-theme-balham table-wrapper" style="height:400px;width: 960px;margin: auto;">    </div>
+    <div id="notice" class="ag-theme-balham table-wrapper" style="height:400px;width: 1320px;margin: auto;">    </div>
 </section>

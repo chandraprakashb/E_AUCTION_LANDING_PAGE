@@ -1,5 +1,7 @@
 <script>
     functionsInitializr(()=>{
+        switchPageSetup('auction-result__link')
+        filterValueHandler('set','lot-lists__link')
         renderLotListTable()
     })
 
@@ -16,12 +18,13 @@
                     officeData.authorities.forEach((authorityData)=>{
                         if('auctions' in authorityData){
                             authorityData.auctions.forEach((auctionData)=>{
+                                console.log(auctionData);
                                 modifiedData.push({
                                     commodityName:comdata.commodityName,
                                     officeName:officeData.officeName,
                                     authorityName:authorityData.authorityName,
-                                    auction_id:authorityData.auction_id,
-                                    depot:authorityData.depot,
+                                    auction_id:auctionData.auction_id,
+                                    auction_date:auctionData.auction_date,
                                     admnNm:auctionData.admnNm,
                                     aucdt:auctionData.aucdt,
                                     upldOn:auctionData.upldOn,
@@ -167,7 +170,7 @@
             {
                 headerName: 'Uploaded By',
                 children: [
-                    {headerName:"Depot"             , field:"depot",    resizable:true,width:"100px"},
+                    {headerName:"Auction Date"      , field:"auction_date",   resizable:true,width:"150px"},
                     {headerName:"Upload By"         , field:"admnNm",   resizable:true,width:"150px"},
                     {headerName:"Auction Month/Yr." , field:"aucdt",    resizable:true,width:"160px"},
                     {headerName:"Upload On"         , field:"upldOn",   resizable:true,width:"155px"},
@@ -189,21 +192,21 @@
                                     auctions:[
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
                                         },
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
                                         },
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
@@ -215,21 +218,21 @@
                                     auctions:[
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
                                         },
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
                                         },
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
@@ -241,21 +244,21 @@
                                     auctions:[
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
                                         },
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
                                         },
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
@@ -268,21 +271,21 @@
                                     auctions:[
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
                                         },
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
                                         },
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
@@ -299,21 +302,21 @@
                                     auctions:[
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
                                         },
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
                                         },
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
@@ -325,21 +328,21 @@
                                     auctions:[
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
                                         },
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
                                         },
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
@@ -351,21 +354,21 @@
                                     auctions:[
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
                                         },
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
                                         },
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
@@ -388,21 +391,21 @@
                                     auctions:[
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
                                         },
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
                                         },
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
@@ -414,21 +417,21 @@
                                     auctions:[
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
                                         },
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
                                         },
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
@@ -440,21 +443,21 @@
                                     auctions:[
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
                                         },
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
                                         },
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
@@ -471,21 +474,21 @@
                                     auctions:[
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
                                         },
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
                                         },
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
@@ -497,21 +500,21 @@
                                     auctions:[
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
                                         },
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
                                         },
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
@@ -523,21 +526,21 @@
                                     auctions:[
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
                                         },
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
                                         },
                                         {
                                             auction_id:"00001",
-                                            depot:"Depot",
+                                            auction_date:"24/02/2023",
                                             admnNm:"Sparsh Technologies",
                                             aucdt:"	2/2023",
                                             upldOn:"24/02/2023 11:45:01 AM",
@@ -552,6 +555,7 @@
                     ];
 
 
+        console.log(DataModifier(tableData));
         var rowData = DataModifier(tableData);
 
         var gridOptions = {columnDefs,rowData, suppressRowTransform: true,};
@@ -588,6 +592,10 @@
         /* color: #ffff; */
     }
 
+    a{
+        cursor: pointer;
+    }
+
 </style>
 <!-- pagetitle start here -->
 <section id="pagetitle-container">
@@ -613,7 +621,7 @@
             <div class="row"  style="padding-bottom: 0px !important;">
                 <div class="four column">
                     <label>Select Commodity <em>*</em></label>                           
-                    <select name="" id="">
+                    <select name="" id="commodity-seletor">
                         <option value="all">All</option>
                         <option value="timber">Timber</option>
                         <option value="all">Bambu</option>
@@ -623,7 +631,7 @@
                 </div>
                 <div class="four column">
                     <label>Select Department <em>*</em></label>                           
-                    <select name="" id="">
+                    <select name="" id="department-seletor">
                         <option value="all">All</option>
                         <option value="timber">Nagpur</option>
                         <option value="all">Gondia</option>
@@ -643,7 +651,7 @@
         </div>
     </div>
     <div class="four column">
-        <a class="">
+        <a class="switch-next">
             Switch to next tab with same Details>>>>>>>>>
         </a>
     </div>

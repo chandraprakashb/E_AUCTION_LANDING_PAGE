@@ -1,5 +1,6 @@
 <script>
     functionsInitializr(()=>{
+      filterValueHandler('set','auction-result__link')
       renderAuctionLotsTable()
     })
 
@@ -134,7 +135,29 @@
                         cellClassRules: {
                             'cell-span': " value !== '' ",
                         },},
-                        {headerName:"e-auction ID", field:"auction_id",resizable:true},
+                        {
+                            headerName:"e-auction ID", 
+                            field:"auction_id",
+                            resizable:true,
+                            rowSpan:()=>3,
+                            cellClassRules: {
+                                'cell-span': " value !== '' ",
+                            },
+                        },
+                       
+                    ]
+                },
+                {
+                    headerName: 'Auction Date',
+                    children:[
+                        {headerName:"Start Date",field:"startDate",resizable:true,width:'86px',rowSpan:()=>3,
+                            cellClassRules: {
+                                'cell-span': " value !== '' ",
+                            },},
+                        {headerName:"End Date",field:"endDate",resizable:true,width:'86px',rowSpan:()=>3,
+                            cellClassRules: {
+                                'cell-span': " value !== '' ",
+                            },},
                         {headerName:"Sold Date",
                           field:"soldDate",
                           resizable:true,
@@ -142,13 +165,6 @@
                           cellStyle: {'color':'red',
                           'background-color':"rgba(245, 233, 233, 0.912)"}
                         },
-                    ]
-                },
-                {
-                    headerName: 'Auction Date',
-                    children:[
-                        {headerName:"Start Date",field:"startDate",resizable:true,width:'86px'},
-                        {headerName:"End Date",field:"endDate",resizable:true,width:'86px'},
                     ]
                 },
                 {
@@ -171,24 +187,24 @@
                             authorityName: "authority 1",
                             auctions:[
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"000001",
                                     soldDate:"2023-03-01",
                                     startDate:"2023-03-01",
                                     endDate:"2023-03-02",
                                     totalLots:"50"
                                 },
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"",
                                     soldDate:"2023-03-01",
-                                    startDate:"2023-03-01",
-                                    endDate:"2023-03-02",
+                                    startDate:"",
+                                    endDate:"",
                                     totalLots:"50"
                                 },
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"",
                                     soldDate:"2023-03-01",
-                                    startDate:"2023-03-01",
-                                    endDate:"2023-03-02",
+                                    startDate:"",
+                                    endDate:"",
                                     totalLots:"50"
                                 }
                             ]
@@ -197,24 +213,24 @@
                             authorityName: "authority 2",
                             auctions:[
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"000001",
                                     soldDate:"2023-03-01",
                                     startDate:"2023-03-01",
                                     endDate:"2023-03-02",
                                     totalLots:"50"
                                 },
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"",
                                     soldDate:"2023-03-01",
-                                    startDate:"2023-03-01",
-                                    endDate:"2023-03-02",
+                                    startDate:"",
+                                    endDate:"",
                                     totalLots:"50"
                                 },
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"",
                                     soldDate:"2023-03-01",
-                                    startDate:"2023-03-01",
-                                    endDate:"2023-03-02",
+                                    startDate:"",
+                                    endDate:"",
                                     totalLots:"50"
                                 }
                             ]
@@ -223,24 +239,24 @@
                             authorityName: "authority 3",
                             auctions:[
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"000003",
                                     soldDate:"2023-03-01",
                                     startDate:"2023-03-01",
                                     endDate:"2023-03-02",
                                     totalLots:"50"
                                 },
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"",
                                     soldDate:"2023-03-01",
-                                    startDate:"2023-03-01",
-                                    endDate:"2023-03-02",
+                                    startDate:"",
+                                    endDate:"",
                                     totalLots:"50"
                                 },
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"",
                                     soldDate:"2023-03-01",
-                                    startDate:"2023-03-01",
-                                    endDate:"2023-03-02",
+                                    startDate:"",
+                                    endDate:"",
                                     totalLots:"50"
                                 }
                             ]
@@ -250,24 +266,24 @@
                             authorityName: "authority 4",
                             auctions:[
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"000004",
                                     soldDate:"2023-03-01",
                                     startDate:"2023-03-01",
                                     endDate:"2023-03-02",
                                     totalLots:"50"
                                 },
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"",
                                     soldDate:"2023-03-01",
-                                    startDate:"2023-03-01",
-                                    endDate:"2023-03-02",
+                                    startDate:"",
+                                    endDate:"",
                                     totalLots:"50"
                                 },
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"",
                                     soldDate:"2023-03-01",
-                                    startDate:"2023-03-01",
-                                    endDate:"2023-03-02",
+                                    startDate:"",
+                                    endDate:"",
                                     totalLots:"50"
                                 }
                             ]
@@ -281,24 +297,24 @@
                             authorityName: "authority 1",
                             auctions:[
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"000005",
                                     soldDate:"2023-03-01",
                                     startDate:"2023-03-01",
                                     endDate:"2023-03-02",
                                     totalLots:"50"
                                 },
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"",
                                     soldDate:"2023-03-01",
-                                    startDate:"2023-03-01",
-                                    endDate:"2023-03-02",
+                                    startDate:"",
+                                    endDate:"",
                                     totalLots:"50"
                                 },
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"",
                                     soldDate:"2023-03-01",
-                                    startDate:"2023-03-01",
-                                    endDate:"2023-03-02",
+                                    startDate:"",
+                                    endDate:"",
                                     totalLots:"50"
                                 }
                             ]
@@ -307,24 +323,24 @@
                             authorityName: "authority 2",
                             auctions:[
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"000006",
                                     soldDate:"2023-03-01",
                                     startDate:"2023-03-01",
                                     endDate:"2023-03-02",
                                     totalLots:"50"
                                 },
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"",
                                     soldDate:"2023-03-01",
-                                    startDate:"2023-03-01",
-                                    endDate:"2023-03-02",
+                                    startDate:"",
+                                    endDate:"",
                                     totalLots:"50"
                                 },
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"",
                                     soldDate:"2023-03-01",
-                                    startDate:"2023-03-01",
-                                    endDate:"2023-03-02",
+                                    startDate:"",
+                                    endDate:"",
                                     totalLots:"50"
                                 }
                             ]
@@ -333,24 +349,24 @@
                             authorityName: "authority 3",
                             auctions:[
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"000007",
                                     soldDate:"2023-03-01",
                                     startDate:"2023-03-01",
                                     endDate:"2023-03-02",
                                     totalLots:"50"
                                 },
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"",
                                     soldDate:"2023-03-01",
-                                    startDate:"2023-03-01",
-                                    endDate:"2023-03-02",
+                                    startDate:"",
+                                    endDate:"",
                                     totalLots:"50"
                                 },
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"",
                                     soldDate:"2023-03-01",
-                                    startDate:"2023-03-01",
-                                    endDate:"2023-03-02",
+                                    startDate:"",
+                                    endDate:"",
                                     totalLots:"50"
                                 }
                             ]
@@ -370,24 +386,24 @@
                             authorityName: "authority 1",
                             auctions:[
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"000007",
                                     soldDate:"2023-03-01",
                                     startDate:"2023-03-01",
                                     endDate:"2023-03-02",
                                     totalLots:"50"
                                 },
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"",
                                     soldDate:"2023-03-01",
-                                    startDate:"2023-03-01",
-                                    endDate:"2023-03-02",
+                                    startDate:"",
+                                    endDate:"",
                                     totalLots:"50"
                                 },
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"",
                                     soldDate:"2023-03-01",
-                                    startDate:"2023-03-01",
-                                    endDate:"2023-03-02",
+                                    startDate:"",
+                                    endDate:"",
                                     totalLots:"50"
                                 }
                             ]
@@ -396,24 +412,24 @@
                             authorityName: "authority 2",
                             auctions:[
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"000008",
                                     soldDate:"2023-03-01",
                                     startDate:"2023-03-01",
                                     endDate:"2023-03-02",
                                     totalLots:"50"
                                 },
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"",
                                     soldDate:"2023-03-01",
-                                    startDate:"2023-03-01",
-                                    endDate:"2023-03-02",
+                                    startDate:"",
+                                    endDate:"",
                                     totalLots:"50"
                                 },
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"",
                                     soldDate:"2023-03-01",
-                                    startDate:"2023-03-01",
-                                    endDate:"2023-03-02",
+                                    startDate:"",
+                                    endDate:"",
                                     totalLots:"50"
                                 }
                             ]
@@ -422,24 +438,24 @@
                             authorityName: "authority 3",
                             auctions:[
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"000009",
                                     soldDate:"2023-03-01",
                                     startDate:"2023-03-01",
                                     endDate:"2023-03-02",
                                     totalLots:"50"
                                 },
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"",
                                     soldDate:"2023-03-01",
-                                    startDate:"2023-03-01",
-                                    endDate:"2023-03-02",
+                                    startDate:"",
+                                    endDate:"",
                                     totalLots:"50"
                                 },
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"",
                                     soldDate:"2023-03-01",
-                                    startDate:"2023-03-01",
-                                    endDate:"2023-03-02",
+                                    startDate:"",
+                                    endDate:"",
                                     totalLots:"50"
                                 }
                             ]
@@ -453,24 +469,24 @@
                             authorityName: "authority 1",
                             auctions:[
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"000010",
                                     soldDate:"2023-03-01",
                                     startDate:"2023-03-01",
                                     endDate:"2023-03-02",
                                     totalLots:"50"
                                 },
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"",
                                     soldDate:"2023-03-01",
-                                    startDate:"2023-03-01",
-                                    endDate:"2023-03-02",
+                                    startDate:"",
+                                    endDate:"",
                                     totalLots:"50"
                                 },
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"",
                                     soldDate:"2023-03-01",
-                                    startDate:"2023-03-01",
-                                    endDate:"2023-03-02",
+                                    startDate:"",
+                                    endDate:"",
                                     totalLots:"50"
                                 }
                             ]
@@ -479,24 +495,24 @@
                             authorityName: "authority 2",
                             auctions:[
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"000011",
                                     soldDate:"2023-03-01",
                                     startDate:"2023-03-01",
                                     endDate:"2023-03-02",
                                     totalLots:"50"
                                 },
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"",
                                     soldDate:"2023-03-01",
-                                    startDate:"2023-03-01",
-                                    endDate:"2023-03-02",
+                                    startDate:"",
+                                    endDate:"",
                                     totalLots:"50"
                                 },
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"",
                                     soldDate:"2023-03-01",
-                                    startDate:"2023-03-01",
-                                    endDate:"2023-03-02",
+                                    startDate:"",
+                                    endDate:"",
                                     totalLots:"50"
                                 }
                             ]
@@ -505,24 +521,24 @@
                             authorityName: "authority 3",
                             auctions:[
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"000012",
                                     soldDate:"2023-03-01",
                                     startDate:"2023-03-01",
                                     endDate:"2023-03-02",
                                     totalLots:"50"
                                 },
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"",
                                     soldDate:"2023-03-01",
-                                    startDate:"2023-03-01",
-                                    endDate:"2023-03-02",
+                                    startDate:"",
+                                    endDate:"",
                                     totalLots:"50"
                                 },
                                 {
-                                    auction_id:"00001",
+                                    auction_id:"",
                                     soldDate:"2023-03-01",
-                                    startDate:"2023-03-01",
-                                    endDate:"2023-03-02",
+                                    startDate:"",
+                                    endDate:"",
                                     totalLots:"50"
                                 }
                             ]
@@ -605,7 +621,7 @@
           <div class="row"  style="padding-bottom: 0px !important;">
               <div class="four column">
                   <label>Select Commodity <em>*</em></label>                           
-                  <select name="" id="">
+                  <select name="" id="commodity-seletor">
                       <option value="all">All</option>
                       <option value="timber">Timber</option>
                       <option value="all">Bambu</option>
@@ -615,7 +631,7 @@
               </div>
               <div class="four column">
                   <label>Select Department <em>*</em></label>                           
-                  <select name="" id="">
+                  <select name="" id="department-seletor">
                       <option value="all">All</option>
                       <option value="timber">Nagpur</option>
                       <option value="all">Gondia</option>
@@ -635,9 +651,6 @@
       </div>
   </div>
   <div class="four column">
-      <a class="">
-          Switch to next tab with same Details>>>>>>>>>
-      </a>
   </div>
 </div>
 
